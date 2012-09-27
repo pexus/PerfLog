@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><xs:schema targetNamespace="http://test/HelloWorldJaxWs" version="1.0" xmlns:tns="http://test/HelloWorldJaxWs" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="helloOperation" type="tns:helloOperation"/>
+
+  <xs:element name="helloOperationResponse" type="tns:helloOperationResponse"/>
+
+  <xs:element name="main" type="tns:main"/>
+
+  <xs:element name="mainResponse" type="tns:mainResponse"/>
+
+  <xs:complexType name="helloOperation">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="helloOperationResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="main">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="arg0" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mainResponse">
+    <xs:sequence/>
+  </xs:complexType>
+</xs:schema>

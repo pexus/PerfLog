@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webservices xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/javaee_web_services_1_2.xsd" version="1.2">
+	<webservice-description>
+		<webservice-description-name>HelloWorldServiceJaxRpcService</webservice-description-name>
+		<wsdl-file>WEB-INF/wsdl/HelloWorldServiceJaxRpc.wsdl</wsdl-file>
+		<jaxrpc-mapping-file>WEB-INF/HelloWorldServiceJaxRpc_mapping.xml</jaxrpc-mapping-file>
+		<port-component>
+			<port-component-name>HelloWorldServiceJaxRpc</port-component-name>
+			<wsdl-port xmlns:pfx="http://test">
+			pfx:HelloWorldServiceJaxRpc</wsdl-port>
+			<enable-mtom>false</enable-mtom>
+			<service-endpoint-interface>test.HelloWorld</service-endpoint-interface>
+			<service-impl-bean>
+				<servlet-link>
+				test_HelloWorld</servlet-link>
+			</service-impl-bean>
+			<handler>
+				<display-name>org.perf.log.filter.ws.JaxRpcLogContextServerHandler</display-name>
+				<handler-name>
+					org.perf.log.filter.ws.JaxRpcLogContextServerHandler
+				</handler-name>
+				<handler-class>
+					org.perf.log.filter.ws.JaxRpcLogContextServerHandler
+				</handler-class>
+			</handler>
+		</port-component>
+	</webservice-description>
+</webservices>

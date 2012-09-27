@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webservices xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/javaee_web_services_1_2.xsd" version="1.2">
+	<webservice-description>
+		<webservice-description-name>HelloWorldServiceJaxWs</webservice-description-name>
+		<wsdl-file>WEB-INF/wsdl/HelloWorldService.wsdl</wsdl-file>
+		<port-component>
+			<port-component-name>HelloWorldDelegate</port-component-name>
+			<wsdl-service xmlns:pfx="http://test/HelloWorldJaxWs">
+			pfx:HelloWorldServiceJaxWs</wsdl-service>
+			<wsdl-port xmlns:pfx="http://test/HelloWorldJaxWs">
+			pfx:HelloWorldPortJaxWs</wsdl-port>
+			<enable-mtom>false</enable-mtom>
+			<service-impl-bean>
+				<servlet-link>
+				test.HelloWorldDelegate</servlet-link>
+			</service-impl-bean>
+			<handler-chains>
+				<handler-chain>
+					<handler>
+						<display-name>org.perf.log.filter.ws.JaxWSLogContextServerHandler</display-name>
+						<handler-name>org.perf.log.filter.ws.JaxWSLogContextServerHandler</handler-name>
+						<handler-class>org.perf.log.filter.ws.JaxWSLogContextServerHandler</handler-class>
+					</handler>
+				</handler-chain>
+			</handler-chains>
+		</port-component>
+	</webservice-description>
+</webservices>

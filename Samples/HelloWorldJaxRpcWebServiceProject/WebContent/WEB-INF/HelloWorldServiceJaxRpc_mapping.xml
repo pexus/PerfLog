@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><java-wsdl-mapping version="1.1" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://www.ibm.com/webservices/xsd/j2ee_jaxrpc_mapping_1_1.xsd">
+    <package-mapping>
+        <package-type>test</package-type>
+        <namespaceURI>http://test</namespaceURI>
+    </package-mapping>
+    <java-xml-type-mapping>
+        <java-type>java.lang.String</java-type>
+        <root-type-qname xmlns:rtq="http://www.w3.org/2001/XMLSchema">rtq:string</root-type-qname>
+        <qname-scope>simpleType</qname-scope>
+    </java-xml-type-mapping>
+    <service-interface-mapping>
+        <service-interface>test.HelloWorldServiceJaxRpcService</service-interface>
+        <wsdl-service-name xmlns:sim="http://test">sim:HelloWorldServiceJaxRpcService</wsdl-service-name>
+        <port-mapping>
+            <port-name>HelloWorldServiceJaxRpc</port-name>
+            <java-port-name>HelloWorldServiceJaxRpc</java-port-name>
+        </port-mapping>
+    </service-interface-mapping>
+    <service-endpoint-interface-mapping>
+        <service-endpoint-interface>test.HelloWorld</service-endpoint-interface>
+        <wsdl-port-type xmlns:seimwpt="http://test">seimwpt:HelloWorld</wsdl-port-type>
+        <wsdl-binding xmlns:seimwb="http://test">seimwb:HelloWorldServiceJaxRpcSoapBinding</wsdl-binding>
+        <service-endpoint-method-mapping>
+            <java-method-name>helloOperation</java-method-name>
+            <wsdl-operation>helloOperation</wsdl-operation>
+            <wrapped-element/>
+            <method-param-parts-mapping>
+                <param-position>0</param-position>
+                <param-type>java.lang.String</param-type>
+                <wsdl-message-mapping>
+                    <wsdl-message xmlns:mppm="http://test">mppm:helloOperationRequest</wsdl-message>
+                    <wsdl-message-part-name>name</wsdl-message-part-name>
+                    <parameter-mode>IN</parameter-mode>
+                </wsdl-message-mapping>
+            </method-param-parts-mapping>
+            <wsdl-return-value-mapping>
+                <method-return-value>java.lang.String</method-return-value>
+                <wsdl-message xmlns:wrvm="http://test">wrvm:helloOperationResponse</wsdl-message>
+                <wsdl-message-part-name>helloOperationReturn</wsdl-message-part-name>
+            </wsdl-return-value-mapping>
+        </service-endpoint-method-mapping>
+    </service-endpoint-interface-mapping>
+</java-wsdl-mapping>

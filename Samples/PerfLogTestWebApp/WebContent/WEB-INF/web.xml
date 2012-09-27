@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<display-name>PerfLogTestWebApp</display-name>
+	<servlet>
+		<description>
+		</description>
+		<display-name>ServiceInvoker</display-name>
+		<servlet-name>ServiceInvoker</servlet-name>
+		<servlet-class>testclient.ServiceInvoker</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ServiceInvoker</servlet-name>
+		<url-pattern>
+		/ServiceInvoker</url-pattern>
+	</servlet-mapping>
+	
+	
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+	<service-ref>
+		<description>
+		WSDL Service HelloWorldServiceJaxWs</description>
+		<service-ref-name>service/HelloWorldServiceJaxWs</service-ref-name>
+		<service-interface>test.HelloWorldServiceJaxWs</service-interface>
+		<wsdl-file>WEB-INF/wsdl/HelloWorldService.wsdl</wsdl-file>
+		<jaxrpc-mapping-file>WEB-INF/HelloWorldService_mapping.xml</jaxrpc-mapping-file>
+		<service-qname xmlns:pfx="http://test/HelloWorldJaxWs">
+		pfx:HelloWorldServiceJaxWs</service-qname>
+		<port-component-ref>
+			<service-endpoint-interface>test.HelloWorldDelegate</service-endpoint-interface>
+		</port-component-ref>
+		<handler>
+			<display-name>
+				org.perf.log.filter.ws.JaxRpcLogContextClientHandler
+			</display-name>
+			<handler-name>
+				org.perf.log.filter.ws.JaxRpcLogContextClientHandler
+			</handler-name>
+			<handler-class>
+				org.perf.log.filter.ws.JaxRpcLogContextClientHandler
+			</handler-class>
+		</handler>
+	</service-ref>
+	<service-ref>
+		<description>
+		WSDL Service HelloWorldServiceJaxRpcService</description>
+		<service-ref-name>service/HelloWorldServiceJaxRpcService</service-ref-name>
+		<service-interface>test.HelloWorldServiceJaxRpcService</service-interface>
+		<wsdl-file>WEB-INF/wsdl/HelloWorldServiceJaxRpc.wsdl</wsdl-file>
+		<jaxrpc-mapping-file>WEB-INF/HelloWorldServiceJaxRpc_mapping.xml</jaxrpc-mapping-file>
+		<service-qname xmlns:pfx="http://test">
+		pfx:HelloWorldServiceJaxRpcService</service-qname>
+		<port-component-ref>
+			<service-endpoint-interface>test.HelloWorld</service-endpoint-interface>
+		</port-component-ref>
+		<handler>
+			<display-name>
+				org.perf.log.filter.ws.JaxRpcLogContextClientHandler
+			</display-name>
+			<handler-name>
+				org.perf.log.filter.ws.JaxRpcLogContextClientHandler
+			</handler-name>
+			<handler-class>
+				org.perf.log.filter.ws.JaxRpcLogContextClientHandler
+			</handler-class>
+		</handler>
+	</service-ref>
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	<filter>
+		<display-name>
+			PerfLogServletFilter
+		</display-name>
+		<filter-name>
+			PerfLogServletFilter
+		</filter-name>
+		<filter-class>
+			org.perf.log.filter.servlet.PerfServletFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>PerfLogServletFilter</filter-name>
+		<url-pattern>/ServiceInvoker</url-pattern>
+		
+		
+
+	</filter-mapping>
+</web-app>

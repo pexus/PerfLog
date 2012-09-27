@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>PerfLog cross JVM context passing via JAX-RPC and JAX-WS Web Service invocation</title>
+<p>
+<b>PerfLog Cross JVM Request Tracking via Web Service Call Demo</b>
+<br><br>
+Enter host and port for target JAX-RPC and JAX-WS Web Service<br>
+JAX-RPC Web Service:  http://host:port/HelloWorldJaxRpcWebServiceProject/services/HelloWorldServiceJaxRpc<br>
+JAX-WS  Web Service:  http://host:port/HelloWorldJaxWsWebServiceProject/HelloWorldServiceJaxWs<br>
+</p>
+ <FORM action="/PerfLogTestWebApp/ServiceInvoker" METHOD="POST" enctype="application/x-www-form-urlencoded"> 
+	
+	<INPUT type="text" name="host" size="40" value="localhost">
+	<INPUT type="text" name="port" size="20" value="9081">
+	<INPUT type="submit" name="Invoke" value="Invoke JAX-RPC and JAX-WS HelloWorld Web Service">
+	</FORM>
+
+</head>
+<body>
+
+</body>
+</html>

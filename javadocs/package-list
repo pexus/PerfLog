@@ -1,0 +1,15 @@
+net.sf.log4jdbc
+org.json.simple
+org.json.simple.parser
+org.perf.log.app.logger
+org.perf.log.context
+org.perf.log.filter.portal
+org.perf.log.filter.servlet
+org.perf.log.filter.sql
+org.perf.log.filter.struts1
+org.perf.log.filter.ws
+org.perf.log.logger
+org.perf.log.mdb
+org.perf.log.properties
+org.perf.log.txn.types
+org.perf.log.utils

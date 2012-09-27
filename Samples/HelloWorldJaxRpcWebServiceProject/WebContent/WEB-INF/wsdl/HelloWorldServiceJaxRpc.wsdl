@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://test" xmlns:impl="http://test" xmlns:intf="http://test" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsi="http://ws-i.org/profiles/basic/1.1/xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <wsdl:types>
+  <schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://test" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <element name="helloOperationResponse">
+    <complexType>
+     <sequence>
+      <element name="helloOperationReturn" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="helloOperation">
+    <complexType>
+     <sequence>
+      <element name="name" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="helloOperationResponse">
+     <wsdl:part element="impl:helloOperationResponse" name="parameters">
+    </wsdl:part>
+
+  </wsdl:message>
+
+   <wsdl:message name="helloOperationRequest">
+     <wsdl:part element="impl:helloOperation" name="parameters">
+    </wsdl:part>
+
+  </wsdl:message>
+
+   <wsdl:portType name="HelloWorld">
+     <wsdl:operation name="helloOperation">
+       <wsdl:input message="impl:helloOperationRequest" name="helloOperationRequest">
+    </wsdl:input>
+
+       <wsdl:output message="impl:helloOperationResponse" name="helloOperationResponse">
+    </wsdl:output>
+
+    </wsdl:operation>
+
+  </wsdl:portType>
+
+   <wsdl:binding name="HelloWorldServiceJaxRpcSoapBinding" type="impl:HelloWorld">
+ <wsaw:UsingAddressing wsdl:required="false" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"/>
+
+     <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+     <wsdl:operation name="helloOperation">
+       <wsdlsoap:operation soapAction="helloOperation"/>
+
+       <wsdl:input name="helloOperationRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="helloOperationResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+    </wsdl:operation>
+
+  </wsdl:binding>
+
+   <wsdl:service name="HelloWorldServiceJaxRpcService">
+     <wsdl:port binding="impl:HelloWorldServiceJaxRpcSoapBinding" name="HelloWorldServiceJaxRpc">
+       <wsdlsoap:address location="http://localhost:9080/HelloWorldJaxRpcWebServiceProject/services/HelloWorldServiceJaxRpc"/>
+
+    </wsdl:port>
+
+  </wsdl:service>
+
+</wsdl:definitions>
