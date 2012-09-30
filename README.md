@@ -300,21 +300,39 @@ provided to show how you can configure and use the PerfLog package. The
 PerfLogAppLogger APIs are also used in the sample Web (PerfLogTestWebApp)
 and stand alone Java test application (PerfLogTestJavaApp)
 
-Directory Files
+Directories in distribution zip
+	
+	The latest distribution zip files can be downloaded from:
+		http://www.pexus.com/perflog
+	
+	The directory content in the distribution are as follows: 
 
-Database/ - DDL for creating the perfDB database for persisting performance log
-records lib/ - binary jars for PerfLog.jar and PerfLogAppLogger.jar PerfLog/
-- source for PerfLog framework PerfLogAppLogger/ - Sample application
-logger using IBM JDK logger enabled to use PerfLog framework PerfLogMDB/
-- Optional Message Driven Bean (MDB) for PerfLog framework that uses JMS
-Queue implementation Samples/ - Sample Web and stand alone Java application
-to demonstrate PerfLog framework
+	Database/ 
+		DDL for creating the perfDB database for persisting 
+		performance log records 
+	lib/ 
+		binary jars for PerfLog.jar and PerfLogAppLogger.jar
+	PerfLog/
+		source for PerfLog framework 
+	PerfLogAppLogger/
+		Sample application logger using using 
+		java.util.logging.* APIs, enabled to use PerfLog framework
+	PerfLogMDB/
+		Optional Message Driven Bean (MDB) for PerfLog framework 
+		that uses JMS Queue implementation 
+	Samples/
+		Sample Web and stand alone Java applications to demonstrate 
+		PerfLog framework and PerfLogAppLogger
 
 For more information visit http://www.pexus.com/perflog
 
-Pexus LLC 
-http://www.pexus.com 
-http://www.pexus.com/perflog
+Pexus LLC
+ 
+	http://www.pexus.com
+ 
+	http://www.pexus.com/perflog
 
+Author
 
+	Pradeep Nambiar, Pexus LLC
 		  
