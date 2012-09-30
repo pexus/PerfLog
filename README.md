@@ -1,7 +1,8 @@
 Pexus PerfLog - J2EE Performance and Diagnostics Logging Framework
 	http://www.pexus.com/perflog
 
-What is PerfLog
+What is PerfLog?
+----------------
 
 Pexus PerfLog is an free and open source (Apache 2.0 License) J2EE performance
 and diagnostic logging framework. It can be easily integrated with any standard
@@ -34,7 +35,8 @@ diagnosis and capturing performance metrics for SLA monitoring and performance
 improvements.
 
 
-What does PerfLog do
+What does PerfLog do?
+---------------------
 
 It captures key performance metrics and request and application contextual
 data for the following type of J2EE requests:
@@ -98,6 +100,7 @@ for more information.
 
 
 Multiple JVM Tracking
+---------------------
 
 PerfLog can track requests spanning multiple JVMs using a request GUID
 (Globally Unique Identifier. Currently multiple JVM tracking is available
@@ -105,6 +108,7 @@ for Web Service calls - both JAX-RPC and JAX-WS. Future enhancements may
 include tracking of remote JVM calls using remote EJB3 calls.
 
 Extensibility
+-------------
 
 PerfLog is extensible and easily customizable. Custom performance metrics can
 be captured and logged from application code in addition to the standard J2EE
@@ -113,7 +117,8 @@ to capture custom metrics or custom session data e.g. extracting userid
 from  session data or application contextual information from session or
 request data.
 
-Integration with Application Logger
+Integration with Application Loggers
+------------------------------------
 
 PerfLog can also easily integrate with your existing application logger
 to enhance application logging by providing a request context and enabling
@@ -136,6 +141,7 @@ APIs.  If you are using WebSphere environment, loggers created using this
 API enables changing log levels dynamically.
 
 Application Diagnostics
+-----------------------
 
 Diagnostic logging and multiple JVM tracking feature via request GUID can
 greatly enhance  diagnosis when used with log file scrapper tools such as
@@ -145,6 +151,7 @@ any overhead introduced by loggers. Performance log data can also be sent
 to a central location via JMS queue logger implementation.
 
 Runtime Environment Changes
+---------------------------
 
 PerfLog uses standard J2EE APIs and will work unchanged in all J2EE
 environment.  It has been tested in Tomcat and IBM WebSphere environment.
@@ -157,6 +164,7 @@ application servers. Use the runtimeEnv.properties within your application
 to override default environment.
 
 Property Files
+--------------
 
 PerfLog properties are defined in perfLogDefault.properties and
 runtimeEnvDefault.properties. Applications including PerfLog jar can include
@@ -177,31 +185,34 @@ including perfLogAppLogger.properties in their application classpath by
 including their custom version of the file.
 
 PerfLog Editions
+----------------
 
 PerfLog is available as free open source edition and a premium supported
 edition for IBM WebSphere Environment.
 
 PerfLog Community Edition (CE)
+------------------------------
 
 The free open source edition comes with Apache 2.0 License and includes the
 source code and binary jar file. Public Git repository are also available
 from the following two locations:
 
 	GitHub:
-		Src Browse: https://github.com/pexus/PerfLog Src
-		Clone: git://github.com/pexus/PerfLog.git Src Clone:
-		https://github.com/pexus/PerfLog.git Src Zip:
+		Src Browse: https://github.com/pexus/PerfLog
+		Clone: git://github.com/pexus/PerfLog.git
+		https://github.com/pexus/PerfLog.git
 		https://github.com/pexus/PerfLog/zipball/master
 
 	Pexus Git Repository:
-		Src Browse: http://git.pexus.net/perflog/ Src
-		Clone:	http://git.pexus.net/perflog Src Clone:
+		Src Browse: http://git.pexus.net/perflog/
+		Clone:	http://git.pexus.net/perflog
 		git@git.pexus.net:perflog
 
 	Binary Downloads:
 		http://www.pexus.com/perflog
 
 IBM WebSphere Supported Edition
+-------------------------------
 
 The supported edition for IBM WebSphere comes with WebSphere binary files,
 documentation and full support and regular maintenance upgrades. Supported
@@ -210,6 +221,7 @@ more details on pricing. Supported Edition also comes with sources for
 customization if required.
 
 PerfLog Customization Services
+------------------------------
 
 Pexus LLC also offers integration and customization services for integrating
 PerfLog for other J2EE environments  and customer application.
@@ -289,6 +301,7 @@ Oracle databases.
 
 
 Documentation
+-------------
 
 Refer to included document on installing, configuring and using PerfLog jar.
 A sample application logger using JDK java.util.logging.* is also provided
