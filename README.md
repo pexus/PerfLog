@@ -1,10 +1,12 @@
 Pexus PerfLog - J2EE Performance and Diagnostics Logging Framework
+------------------------------------------------------------------
+
 	http://www.pexus.com/perflog
 
 What is PerfLog?
 ----------------
 
-Pexus PerfLog is an free and open source (Apache 2.0 License) J2EE performance
+Pexus PerfLog is a free and open source (Apache 2.0 License) J2EE performance
 and diagnostic logging framework. It can be easily integrated with any standard
 J2EE application  via standard J2EE deployment configuration  files to capture
 request performance metrics without writing any custom code or modifying

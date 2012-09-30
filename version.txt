@@ -1,1 +1,1 @@
-Date: 2012-09-30 Version: 1.2.1 Build: 28 Edition:Community Edition
+Date: 2012-09-30 Version: 1.2.1 Build: 30 Edition:Community Edition
