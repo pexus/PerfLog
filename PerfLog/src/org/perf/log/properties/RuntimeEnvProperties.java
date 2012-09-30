@@ -16,8 +16,8 @@
  * limitations under the License.
  ******************************************************************************/
 package org.perf.log.properties;
-import java.io.*;
 import java.util.Properties;
+import org.perf.log.utils.PropertyFileLoader;
 
 public class RuntimeEnvProperties {
 		
@@ -33,18 +33,18 @@ public class RuntimeEnvProperties {
 	    try{
 	    	// Check if there is runtimeEnv.properties file available in the environment
 	    	// If not found load the runtimeEnvDefault.properties which is packaged in PerfLog.jar
-	    	InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("runtimeEnv.properties");	    	 		    	
-	        Properties props = new Properties();
-	        if(in == null) {
-	        	System.out.println("Error loading runtimeEnv.properties, attempting to load runtimeEnvDefault.properties now.");
-	        	in = this.getClass().getClassLoader().getResourceAsStream ("runtimeEnvDefault.properties");
-	        }
-	        if(in!=null) {
-	        	props.load(in);
+	    	ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
+			Properties props = PropertyFileLoader.load(
+					"runtimeEnv.properties", 
+					"runtimeEnvDefault.properties",
+					ctxClassLoader,
+					this.getClass().getClassLoader(),
+					RuntimeEnvProperties.class.getName());
+			if (props != null) {
+	    	
 	        	containerType  = props.getProperty(RUNTIME_ENV_CONTAINER_TYPE);
 	        	jvmCloneGetterImplClass =  props.getProperty(RUNTIME_ENV_JVM_CLONE_GETTER_IMPL_CLASS);
 	        	
-	        	printCurrentPropertyValues();
 	        }
 	        else {
 	        	System.out.println("Error loading runtimeEnv.properties and runtimeEnvDefault.properties");

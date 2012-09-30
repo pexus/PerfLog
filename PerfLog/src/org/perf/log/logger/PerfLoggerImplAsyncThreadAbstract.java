@@ -33,6 +33,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.perf.log.properties.LoggerProperties;
 
 import org.perf.log.properties.TunableProperties;
+import org.perf.log.utils.PropertyFileLoader;
 
 public abstract class PerfLoggerImplAsyncThreadAbstract implements PerfLogger {
 	private final static Logger logger = LoggerFactory.getLogger(PerfLoggerImplAsyncThreadAbstract.class.getName());
@@ -63,16 +64,16 @@ public abstract class PerfLoggerImplAsyncThreadAbstract implements PerfLogger {
 		if(!propertiesInited) {
 			try {
 				
-				InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("perfLog.properties");	
-		        if(in == null) {
-		        	System.out.println(PerfLoggerImplAsyncThreadAbstract.class.getName()
-		        			+":Error loading perfLog.properties, attempting to load perfLogDefault.properties now.");
-		        	in = this.getClass().getClassLoader().getResourceAsStream ("perfLogDefault.properties");
-		        }
 				String propVal;
-				Properties props = new Properties();
-				if (in != null) {
-					props.load(in);
+				ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
+				Properties props = PropertyFileLoader.load(
+						"perfLog.properties", 
+						"perfLogDefault.properties", 
+						ctxClassLoader,
+						this.getClass().getClassLoader(),
+						PerfLoggerImplAsyncThreadAbstract.class.getName());
+				if (props != null) {
+				
 		        	propVal = props.getProperty(LOGGER_ASYNC_THREAD_LOGGER_MAX_Q_SIZE);
 		        	if(propVal!=null)
 		        		setMaxQSize(new Long(propVal).longValue());

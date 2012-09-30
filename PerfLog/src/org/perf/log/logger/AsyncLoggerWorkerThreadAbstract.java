@@ -29,12 +29,12 @@ package org.perf.log.logger;
  * @author Pradeep Nambiar 2/10/2012
  */
 
-import java.io.InputStream;
+
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.perf.log.properties.LoggerProperties;
 import org.perf.log.properties.TunableProperties;
+import org.perf.log.utils.PropertyFileLoader;
 
 public abstract class AsyncLoggerWorkerThreadAbstract {
 	private final static Logger logger = LoggerFactory.getLogger(AsyncLoggerWorkerThreadAbstract.class.getName());
@@ -60,15 +60,15 @@ public abstract class AsyncLoggerWorkerThreadAbstract {
 		if (!propertiesInited) {
 			try {
 				String propVal;
-				InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("perfLog.properties");	    	 		    	
-		        Properties props = new Properties();
-		        if(in == null) {
-		        	System.out.println(AsyncLoggerWorkerThreadAbstract.class.getName()+
-		        				":Error loading perfLog.properties, attempting to load perfLogDefault.properties now.");
-		        	in = this.getClass().getClassLoader().getResourceAsStream ("perfLogDefault.properties");
-		        }
-				if (in != null) {
-					props.load(in);
+				ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
+				Properties props = PropertyFileLoader.load(
+						"perfLog.properties", 
+						"perfLogDefault.properties",
+						ctxClassLoader,
+						this.getClass().getClassLoader(),
+						AsyncLoggerWorkerThreadAbstract.class.getName());
+				
+				if (props != null) {
 					
 					propVal = props
 							.getProperty(LOGGER_ASYNC_THREAD_LOGGER_MIN_FLUSH_THRESHOLD);

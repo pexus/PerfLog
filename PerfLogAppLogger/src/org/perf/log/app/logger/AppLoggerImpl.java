@@ -19,7 +19,6 @@ package org.perf.log.app.logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
@@ -28,13 +27,17 @@ import java.util.logging.*;
 import org.perf.log.context.PerfLogContextHelper;
 import org.perf.log.logger.FileWriter;
 import org.perf.log.logger.PerfLogMessageFormatter;
+import org.perf.log.utils.JvmCloneGetterFactory;
+import org.perf.log.utils.PropertyFileLoader;
 
 public class AppLoggerImpl implements org.perf.log.app.logger.Logger {
 
 	// Create a java.util.logggin.Logger
 	// This can be used to leverage J2EE container log level control e.g. in
 	// WebSphere
-	private static java.util.logging.Logger JDKLogger = null;
+	private java.util.logging.Logger javaUtilLogger = null;
+	private String loggerName;
+	
 	private static boolean propertiesInited = false;
 	private static String logDestination = "console";
 	private static String logFileRootDir = null;
@@ -42,13 +45,18 @@ public class AppLoggerImpl implements org.perf.log.app.logger.Logger {
 	private static String logFileName = "appLogFile";
 	private static int logFileMaxSize = 2097152; // 2MB
 	private static String logFileInitialLevel = "info";
+	private static boolean useAsynchronousLogging=false;
 	private static final String PROP_LOG_DESTINATION = "logDestination";
 	private static final String PROP_LOGFILE_ROOT_DIR = "logFileRootDir";
 	private static final String PROP_LOGFILE_MAX_SIZE = "logFileMaxSize";
 	private static final String PROP_LOGFILE_NUM_TO_KEEP = "logFileNumToKeep";
 	private static final String PROP_LOGFILE_NAME = "logFileName";
 	private static final String PROP_LOGFILE_INITIAL_LEVEL = "logFileInitialLevel";
-	private static boolean jdkLoggerInited = false;
+	private static final String PROP_USE_ASYNCHRONOUS_LOGGING = "useAsynchronousLogging";
+	private static ConsoleHandler consoleHandler = null;
+	private static FileHandler fileHandler = null;
+	private static CommonJAsyncThreadLogger asyncLogger = null;
+	//private static boolean javaUtilLoggerInited = false;
 
 	private Level getInitialJDKLoggerLevel() {
 		// valid initial level values : warn trace info error debug off
@@ -73,101 +81,95 @@ public class AppLoggerImpl implements org.perf.log.app.logger.Logger {
    	
 
 	private ConsoleHandler getConsoleHandler() {
-		ConsoleHandler consoleHandler = null;
-
-		consoleHandler = new java.util.logging.ConsoleHandler();
-		consoleHandler.setFormatter(new AppLogMessageFormatter(
+		
+		if(consoleHandler == null ) {
+			consoleHandler = new java.util.logging.ConsoleHandler();
+			consoleHandler.setFormatter(new AppLogMessageFormatter(
 				new MessageFormat("{0}\n")));
+		}
 		return consoleHandler;
 
 	}
 
 	private FileHandler getFileHandler() {
-		// file handler...//PerfLogDB Properties
-		FileHandler fileHandler = null;
-		String logFileNname = getLogFileName();
 
-		File f = new File(getLogFileRootDir());
-		if (!f.exists()) {
-			f.mkdirs();
-		}
-		if (getLogFileName() != null) {
-			logFileNname = logFileNname.trim();
-			if (!logFileNname.endsWith(".log")) {
-				logFileNname = logFileNname.concat("%g%u.log");
-			} else {
-				logFileNname = logFileNname.substring(0,
-						logFileNname.indexOf(".log"));
-				logFileNname = logFileNname.concat("%g%u.log");
+		if (fileHandler == null) {
+			String fullLogFileName 	= getLogFileName();
+			String logRootForThisJVM = getLogRootDirForThisJVM();
+			File f = new File(logRootForThisJVM);
+			if (!f.exists()) {
+				f.mkdirs();
 			}
-		}
-		logFileNname = getLogFileRootDir() + "/" + logFileNname;
-		try {
-			fileHandler = new FileHandler(logFileNname, getLogFileMaxSize(),
-					getLogFileNumToKeep(), true);
-			fileHandler.setFormatter(new PerfLogMessageFormatter(
-					new MessageFormat("{0}\n")));
-		} catch (IOException ioException) {
-			System.out
-					.println("IO Exception during initializing app log file, will use console handler"
-							+ ioException.getMessage());
-			return null;
-		}
+			if (getLogFileName() != null) {
+				fullLogFileName = fullLogFileName.trim();
+				if (!fullLogFileName.endsWith(".log")) {
+					fullLogFileName = fullLogFileName.concat("%g%u.log");
+				} else {
+					fullLogFileName = fullLogFileName.substring(0,
+							fullLogFileName.indexOf(".log"));
+					fullLogFileName = fullLogFileName.concat("%g%u.log");
+				}
+			}
+			fullLogFileName = logRootForThisJVM + "/" + fullLogFileName;
+			try {
+				fileHandler = new FileHandler(fullLogFileName,
+						getLogFileMaxSize(), getLogFileNumToKeep(), true);
+				fileHandler.setFormatter(new PerfLogMessageFormatter(
+						new MessageFormat("{0}\n")));
+			} catch (IOException ioException) {
+				System.out
+						.println("IO Exception during initializing app log file:" + fullLogFileName + ", will use console handler"
+								+ ioException.getMessage());
+				return null;
+			}
+			System.out.println(AppLoggerImpl.class.getName()+":Application Log File opened for logging:"+fullLogFileName);
+		} 
 		return fileHandler;
 
 	}
 
-	private synchronized void initJDKLogger() {
-		if (!jdkLoggerInited) {
-			initProperties();
-			if (JDKLogger == null) {
-				JDKLogger = java.util.logging.Logger.getLogger(this.getClass()
-						.getName());
-				// This is a sample implementation. Get the initial level from
-				// values initialized from properties file
-				// If running in WebSphere Environment, the levels can also be
-				// changed
-				// from WAS console if required
-				// Navigate to Troubleshooting -> Logs and Traces -> <server>
-				// and
-				// Change Log Level Details
-				// and look for org.perf.log.logger.LoggerImpl
+	private synchronized void initJavaUtilLogger(String loggerName) {
+		initProperties();
 
-				JDKLogger.setLevel(getInitialJDKLoggerLevel());
+		javaUtilLogger = java.util.logging.Logger.getLogger(loggerName);
+		// This is a sample implementation. Get the initial level from
+		// values initialized from properties file
+		// If running in WebSphere Environment, the levels can also be
+		// changed
+		// from WAS console if required
+		// Navigate to Troubleshooting -> Logs and Traces -> <server>
+		// and
+		// Change Log Level Details
+		// and look for org.perf.log.logger.LoggerImpl
 
-				if (getLogDestination().equalsIgnoreCase("console")) {
+		javaUtilLogger.setLevel(getInitialJDKLoggerLevel());
 
-					ConsoleHandler consoleHandler = getConsoleHandler();
-					JDKLogger.addHandler(consoleHandler);
-				} else {
-					
-					FileHandler fileHandler = getFileHandler();
-					if (fileHandler == null) {
-						ConsoleHandler consoleHandler = getConsoleHandler();
-						JDKLogger.addHandler(consoleHandler);
-					} else {
-						JDKLogger.addHandler(fileHandler);
-					}
-				}
+		if (getLogDestination().equalsIgnoreCase("console")) {
+
+			ConsoleHandler consoleHandler = getConsoleHandler();
+			javaUtilLogger.addHandler(consoleHandler);
+		} else {
+
+			FileHandler fileHandler = getFileHandler();
+			if (fileHandler == null) {
+				ConsoleHandler consoleHandler = getConsoleHandler();
+				javaUtilLogger.addHandler(consoleHandler);
+			} else {
+				javaUtilLogger.addHandler(fileHandler);
 			}
-			JDKLogger.setUseParentHandlers(false);
-			jdkLoggerInited = true;
 		}
 
-	}
+		javaUtilLogger.setUseParentHandlers(false);
 
-	public AppLoggerImpl() {
-		super();
-		initJDKLogger();
 	}
 
 	public AppLoggerImpl(String loggerName) {
 		super();
-		initJDKLogger();
+		initJavaUtilLogger(loggerName);
 		this.loggerName = loggerName;
 	}
 
-	String loggerName;
+	
 
 	@Override
 	public void debug(String msg) {
@@ -245,7 +247,7 @@ public class AppLoggerImpl implements org.perf.log.app.logger.Logger {
 	 * @param message
 	 * @param t
 	 */
-	private void log(Level jdkLoggerLevel, String appLoggerLevelStr, String message, Throwable t) {
+	private void log(Level javaUtilLoggerLevel, String appLoggerLevelStr, String message, Throwable t) {
 
 		StringBuffer buf = new StringBuffer();
 
@@ -264,11 +266,23 @@ public class AppLoggerImpl implements org.perf.log.app.logger.Logger {
 		buf.append(PerfLogContextHelper.getBaseAndInfoContextString());
 		buf.append(message);
 
-		if (JDKLogger.isLoggable(jdkLoggerLevel)) {
-			if (t != null) {
-				JDKLogger.log(jdkLoggerLevel, buf.toString(), t);
-			} else
-				JDKLogger.log(jdkLoggerLevel, buf.toString());
+		if (javaUtilLogger.isLoggable(javaUtilLoggerLevel)) {
+			
+			if(isUseAsynchronousLogging()) {
+				AppLogData appLogData = new AppLogData();
+				appLogData.setJavaUtilLogger(javaUtilLogger);
+				appLogData.setJavaUtilLoggerLevel(javaUtilLoggerLevel);
+				appLogData.setLogData(buf.toString());
+				appLogData.setThrowable(t);
+				asyncLogger.log(appLogData);
+			}
+			else {
+			
+				if (t != null) {
+					javaUtilLogger.log(javaUtilLoggerLevel, buf.toString(), t);
+				} else
+					javaUtilLogger.log(javaUtilLoggerLevel, buf.toString());
+			}
 		} else {
 			// Cache the trace data in the debug context
 			// This would be useful for diagnosis when the context data
@@ -277,8 +291,8 @@ public class AppLoggerImpl implements org.perf.log.app.logger.Logger {
 			PerfLogContextHelper.addToDebugContext("trace", buf.toString());
 		}
 		// Dump the context data when there is an error
-		if (JDKLogger.isLoggable(jdkLoggerLevel) && jdkLoggerLevel == Level.SEVERE) {
-			PerfLogContextHelper.dumpPerfLogContext(JDKLogger);
+		if (javaUtilLogger.isLoggable(javaUtilLoggerLevel) && javaUtilLoggerLevel == Level.SEVERE) {
+			PerfLogContextHelper.dumpPerfLogContext(javaUtilLogger);
 		}
 
 	}
@@ -294,25 +308,25 @@ public class AppLoggerImpl implements org.perf.log.app.logger.Logger {
 
 	public void setLevel(Level level) {
 
-		if (JDKLogger != null)
-			JDKLogger.setLevel(level);
+		if (javaUtilLogger != null)
+			javaUtilLogger.setLevel(level);
 	}
 
-	private static void initProperties() {
+	private synchronized static void initProperties() {
 		if (!propertiesInited) {
 			try {
-				InputStream in = Thread.currentThread().getContextClassLoader()
-						.getResourceAsStream("perfLogAppLogger.properties");
-					
-		        if(in == null) {
-		        	System.out.println(AppLoggerImpl.class.getClass().getCanonicalName()+":Error loading perfLogAppLogger.properties using context class loader, attempting to load default perfLogAppLogger.properties now.");
-		        	in = AppLoggerImpl.class.getClass().getClassLoader().getResourceAsStream("perfLogAppLogger.properties");
-		        }
+				
 				String propVal;
-				Properties props = new Properties();
-				if (in != null) {
-					props.load(in);
-
+				ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
+				Properties props = PropertyFileLoader.load(
+						"perfLogAppLogger.properties", 
+						"perfLogAppLogerDefault.properties", 
+						ctxClassLoader,
+						AppLoggerImpl.class.getClass().getClassLoader(),
+						AppLoggerImpl.class.getName());
+				
+				if (props != null) {
+					
 					propVal = props.getProperty(PROP_LOG_DESTINATION);
 					if (propVal != null)
 						setLogDestination(propVal);
@@ -336,15 +350,23 @@ public class AppLoggerImpl implements org.perf.log.app.logger.Logger {
 					propVal = props.getProperty(PROP_LOGFILE_INITIAL_LEVEL);
 					if (propVal != null)
 						setLogFileInitialLevel(propVal);
+					
+					propVal = props.getProperty(PROP_USE_ASYNCHRONOUS_LOGGING);
+					if(propVal!=null)
+						setUseAsynchronousLogging(new Boolean(propVal).booleanValue());
+					if(isUseAsynchronousLogging()) {
+						// create an instance of CommonJAsyncThreadLooger
+						asyncLogger = new CommonJAsyncThreadLogger();
+					}
 
 				} else {
-					System.out.println(FileWriter.class.getName()
-							+ ":Error in reading perfLogAppLogger.properties");
+					System.out.println(AppLoggerImpl.class.getName()
+							+ ":Error in reading perfLogAppLogger properties files");
 				}
 
 			} catch (Exception exception) {
-				System.out.println(FileWriter.class.getName()
-						+ ":Error Loading perfLogAppLogger.properties"
+				System.out.println(AppLoggerImpl.class.getName()
+						+ ":Error Loading perfLogAppLogger properties:"
 						+ exception.getMessage());
 			}
 
@@ -356,6 +378,23 @@ public class AppLoggerImpl implements org.perf.log.app.logger.Logger {
 	public static String getLogFileRootDir() {
 		return logFileRootDir;
 	}
+	
+	public static String getLogRootDirForThisJVM() {
+		// Get the File Root Dir 
+		String logFileRootDirFromProperty = getLogFileRootDir();
+		String logRootDir = logFileRootDirFromProperty;
+				
+		// append the JVM Clone name to the directory to split individually 
+		// create and log to each JVM clone's instance log file
+		String envInstanceName = JvmCloneGetterFactory.getJvmCloneGetterImpl().getName();
+		if(envInstanceName!=null)
+		{
+			logRootDir = logRootDir+"/"+envInstanceName;
+		}
+		
+		return logRootDir;
+	}
+	
 
 	public static void setLogFileRootDir(String inLogFileRootDir) {
 		logFileRootDir = inLogFileRootDir;
@@ -399,6 +438,66 @@ public class AppLoggerImpl implements org.perf.log.app.logger.Logger {
 
 	public static void setLogDestination(String logDestination) {
 		AppLoggerImpl.logDestination = logDestination;
+	}
+
+
+
+	@Override
+	public void fine(String msg) {
+		log(Level.FINE, "FINE", msg, null);
+		
+	}
+
+
+
+	@Override
+	public void fine(String msg, Throwable t) {
+		log(Level.FINE, "FINE", msg, t);
+		
+	}
+
+
+
+	@Override
+	public void finest(String msg) {
+		log(Level.FINEST, "FINEST", msg, null);
+		
+	}
+
+
+
+	@Override
+	public void finest(String msg, Throwable t) {
+		log(Level.FINEST, "FINEST", msg, t);
+		
+	}
+
+
+
+	@Override
+	public void severe(String msg) {
+		log(Level.SEVERE, "SEVERE", msg, null);
+		
+	}
+
+
+
+	@Override
+	public void severe(String msg, Throwable t) {
+		log(Level.SEVERE, "SEVERE", msg, t);
+		
+	}
+
+
+
+	public static boolean isUseAsynchronousLogging() {
+		return useAsynchronousLogging;
+	}
+
+
+
+	public static void setUseAsynchronousLogging(boolean inUseAsynchronousLogging) {
+		useAsynchronousLogging = inUseAsynchronousLogging;
 	}
 
 }

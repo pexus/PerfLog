@@ -20,18 +20,16 @@ package org.perf.log.logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
 import org.perf.log.properties.LoggerProperties;
 import org.perf.log.properties.TunableProperties;
 import org.perf.log.utils.JvmCloneGetterFactory;
+import org.perf.log.utils.PropertyFileLoader;
 
 /**
  * This class is used to write the perf log messages to a file
@@ -59,7 +57,7 @@ public class FileWriter
 	
 	
 	/**
-	 * 	This method will construct a formatted perf log data string suitable for writing to PERF-DB Log file 
+	 * 	This method will construct a formatted perf log data string suitable for writing to perf  log file 
 	 * @param PerfLogData
 	 * @return str - formatted string 
 	 */
@@ -121,7 +119,7 @@ public class FileWriter
 		//PerfLogDB Properties
 		FileHandler fileHandler = null;
 		
-		String logFileNname="perf-log";
+		String logFileName="perf-log";
 		
 		if(perfFileLogger == null) 
 		{
@@ -131,30 +129,30 @@ public class FileWriter
 			{
 				f.mkdirs();
 			}
-			if(logFileNname != null) 
+			if(logFileName != null) 
 			{
-				logFileNname = logFileNname.trim();
-				if(!logFileNname.endsWith(".log")) 
+				logFileName = logFileName.trim();
+				if(!logFileName.endsWith(".log")) 
 				{
-					logFileNname = logFileNname.concat("%g%u.log");
+					logFileName = logFileName.concat("%g%u.log");
 				} 
 				else 
 				{
-					logFileNname = logFileNname.substring(0,logFileNname.indexOf(".log"));
-					logFileNname = logFileNname.concat("%g%u.log");
+					logFileName = logFileName.substring(0,logFileName.indexOf(".log"));
+					logFileName = logFileName.concat("%g%u.log");
 				}
 			}
-			logFileNname = getLogRootDir() + "/" + logFileNname;
+			logFileName = getLogRootDir() + "/" + logFileName;
 			try 
 			{
-				fileHandler = new FileHandler(logFileNname,getLogFileMaxSize(),getLogFileNumToKeep(),true);
+				fileHandler = new FileHandler(logFileName,getLogFileMaxSize(),getLogFileNumToKeep(),true);
 				fileHandler.setFormatter(new PerfLogMessageFormatter(new MessageFormat("{0}\n")));
 			} catch (IOException ioException)
 			{
 				logger.error("IO Exception during initializing perf log file:"+ioException.getMessage());
 				throw ioException;
 			}
-
+			System.out.println(FileWriter.class.getName()+":PerfLog file opened for logging:"+logFileName);
 			perfFileLogger.addHandler(fileHandler);
 			perfFileLogger.setUseParentHandlers(false);
 			perfFileLogger.setLevel(Level.INFO);
@@ -279,15 +277,16 @@ public class FileWriter
 	private static synchronized void initProperties() {
 		if (!propertiesInited) {
 			try {
-				InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("perfLog.properties");	
-		        if(in == null) {
-		        	System.out.println(FileWriter.class.getName()+":Error loading perfLog.properties, attempting to load perfLogDefault.properties now.");
-		        	in = FileWriter.class.getClassLoader().getResourceAsStream ("perfLogDefault.properties");
-		        }	
+				
 				String propVal;
-				Properties props = new Properties();
-				if (in != null) {
-					props.load(in);
+				ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
+				Properties props = PropertyFileLoader.load(
+						"perfLog.properties", 
+						"perfLogDefault.properties",
+						ctxClassLoader,
+						FileWriter.class.getClass().getClassLoader(),
+						FileWriter.class.getName());
+				if (props != null) {
 					propVal = props
 							.getProperty(LOGGER_FILEWRITER_FILE_WRITE_ENABLED);
 					if (propVal != null)

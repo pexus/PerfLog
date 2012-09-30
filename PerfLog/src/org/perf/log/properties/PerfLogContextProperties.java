@@ -19,6 +19,9 @@ package org.perf.log.properties;
 import java.io.*;
 import java.util.Properties;
 
+import org.perf.log.logger.FileWriter;
+import org.perf.log.utils.PropertyFileLoader;
+
 public class PerfLogContextProperties {
 		
 		private static final String PERFLOG_CONTEXT_DYNAMIC_FORCE_DUMP_OF_DEBUG_CONTEXT_ON_DELETE = "dynamic.perflog.context.forceDumpOfDebugContextOnDelete";
@@ -45,17 +48,16 @@ public class PerfLogContextProperties {
 	    protected PerfLogContextProperties(){
 	    String errorMsg = "Error Loading perfLog.properties or perfLogDefault.properties, using defaults.";
 	    try{
-	    	
-	    	InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("perfLog.properties");	
-	        if(in == null) {
-	        	System.out.println("Error loading perfLog.properties, attempting to load perfLogDefault.properties now.");
-	        	in = this.getClass().getClassLoader().getResourceAsStream("perfLogDefault.properties");
-	        }
-	        String propVal;
-	        Properties props = new Properties();
-	        if(in!=null) {
-	        	props.load(in);
-	        	propVal  = props.getProperty(PERFLOG_CONTEXT_STATIC_MAX_DEBUG_CONTEXT_SIZE_IN_BYTES);
+	    	String propVal;
+	    	ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
+			Properties props = PropertyFileLoader.load(
+					"perfLog.properties", 
+					"perfLogDefault.properties", 
+					ctxClassLoader,
+					this.getClass().getClassLoader(),
+					PerfLogContextProperties.class.getName());
+			if (props != null) {
+	    	   	propVal  = props.getProperty(PERFLOG_CONTEXT_STATIC_MAX_DEBUG_CONTEXT_SIZE_IN_BYTES);
 	        	if(propVal!=null)
 	        			maxDebugContextSizeInBytes = new Long(propVal).longValue();
 	        	propVal  = props.getProperty(PERFLOG_CONTEXT_STATIC_MAX_REQUEST_DATA_CONTEXT_SIZE_IN_BYTES);
@@ -68,7 +70,7 @@ public class PerfLogContextProperties {
 	        	propVal = props.getProperty(PERFLOG_CONTEXT_DYNAMIC_FORCE_DUMP_OF_DEBUG_CONTEXT_ON_DELETE);
 	        	if(propVal!=null)
 	        		forceDumpOfDebugContextOnDelete = new Boolean(propVal).booleanValue();
-	        	printCurrentPropertyValues();
+	        	
 	        }
 	        else {
 	        	System.out.println(errorMsg);

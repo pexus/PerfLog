@@ -20,6 +20,9 @@ package org.perf.log.properties;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.perf.log.logger.FileWriter;
+import org.perf.log.utils.PropertyFileLoader;
+
 
 public class LoggerProperties {
 
@@ -113,17 +116,16 @@ public class LoggerProperties {
     try{
     	// Initialize default values from perfLog.properties
     	// Properties can be re-initialized by TunableProperties implementation
-    	
-    	InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(PERF_LOG_PROPERTIES);	
-        if(in == null) {
-        	System.out.println(thisClassName + ":Error loading perfLog.properties, attempting to load perfLogDefault.properties now.");
-        	in = this.getClass().getClassLoader().getResourceAsStream("perfLogDefault.properties");
-        }
-    	
     	String propVal;
-        Properties props = new Properties();
-        if(in!=null) {
-        	props.load(in);
+    	ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
+		Properties props = PropertyFileLoader.load(
+				"perfLog.properties", 
+				"perfLogDefault.properties", 
+				ctxClassLoader,
+				this.getClass().getClassLoader(),
+				LoggerProperties.class.getName());
+		if (props != null) {
+    	
         	propVal  = props.getProperty(LOGGER_STATIC_LOGGER_IMPL_CLASS);
         	if(propVal!=null)
         			loggerImplClass = propVal;
@@ -237,11 +239,6 @@ public class LoggerProperties {
         	if(propVal!=null)
         		tunablePropertiesImplUrlResource = propVal;
         	
-        	        	
-        	printCurrentPropertyValues();
-        	
-        	// Initialize the tunable properties class
-        	
         }
         else {
         	System.out.println(errorMsg);
@@ -252,6 +249,7 @@ public class LoggerProperties {
        }	 
     }
 	
+    
     void printCurrentPropertyValues() 
     {
     	System.out.println(thisClassName + ":---- Logger properties from file ------------------------");

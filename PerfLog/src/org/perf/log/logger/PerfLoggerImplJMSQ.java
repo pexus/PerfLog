@@ -36,6 +36,7 @@ import javax.naming.NamingException;
 
 import org.perf.log.properties.LoggerProperties;
 import org.perf.log.properties.TunableProperties;
+import org.perf.log.utils.PropertyFileLoader;
 
 // This implementation will work with JMS including MQ environment
 
@@ -105,21 +106,15 @@ public class PerfLoggerImplJMSQ implements PerfLogger
 	protected void loadProps() 
 	{
 		
-		Properties props = new Properties();
-		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("perfLog.properties");	
-        if(in == null) {
-        	System.out.println("PerfLoggerImplJMSQ.loadProps(): Error loading perfLog.properties, attempting to load perfLogDefault.properties now.");
-        	in = PerfLoggerImplJMSQ.class.getClassLoader().getResourceAsStream ("perfLogDefault.properties");
-        }
-		if (in != null) 
-		{
-			try 
-			{
-				props.load(in);
-			} catch (IOException ioException) 
-			{
-				System.out.println("PerfLoggerImplJMSQ.loadProps():"+ioException.getMessage());
-			}
+		String propVal;
+		ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
+		Properties props = PropertyFileLoader.load(
+				"perfLog.properties", 
+				"perfLogDefault.properties", 
+				ctxClassLoader,
+				PerfLoggerImplJMSQ.class.getClass().getClassLoader(),
+				PerfLoggerImplJMSQ.class.getName());
+		if (props != null) {
 			queueConnFactoryName = props.getProperty(STATIC_PERF_LOGGER_IMPL_JMSQ_QUEUE_CONNECTION_FACTORY);
 			if (queueConnFactoryName == null)
 				queueConnFactoryName = "jms/perfQCF";
@@ -127,7 +122,7 @@ public class PerfLoggerImplJMSQ implements PerfLogger
 			if (queueName == null)
 				queueName = "jms/qPerfLog";
 			
-			String propVal  = props.getProperty(DYNAMIC_PERF_LOGGER_IMPL_JMSQ_MESSAGE_EXPIRATION_TIME_IN_MILLIS);
+			propVal  = props.getProperty(DYNAMIC_PERF_LOGGER_IMPL_JMSQ_MESSAGE_EXPIRATION_TIME_IN_MILLIS);
 			if(propVal!=null)
 				msgExpiryTimeInMillis = Long.valueOf(propVal);
 

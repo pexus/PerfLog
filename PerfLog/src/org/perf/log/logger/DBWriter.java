@@ -22,7 +22,6 @@ package org.perf.log.logger;
  * @author Pradeep Nambiar 2/10/2012
  */
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -36,6 +35,7 @@ import javax.sql.DataSource;
 
 import org.perf.log.properties.LoggerProperties;
 import org.perf.log.properties.TunableProperties;
+import org.perf.log.utils.PropertyFileLoader;
 import org.perf.log.utils.StringUtils;
 
 
@@ -69,16 +69,16 @@ public class DBWriter {
 		if (!propertiesInited) {
 			try {
 				String propVal;
-				Properties props = new Properties();
+				ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
+				Properties props = PropertyFileLoader.load(
+						"perfLog.properties", 
+						"perfLogDefault.properties", 
+						ctxClassLoader,
+						DBWriter.class.getClass().getClassLoader(),
+						DBWriter.class.getName());
 				
-				InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("perfLog.properties");	
-		        if(in == null) {
-		        	System.out.println(DBWriter.class.getName()+":Error loading perfLog.properties, attempting to load perfLogDefault.properties now.");
-		        	in = DBWriter.class.getClassLoader().getResourceAsStream ("perfLogDefault.properties");
-		        }				
-				if (in != null) {
-					props.load(in);
-					
+				if (props != null) {
+
 					propVal = props
 							.getProperty(LOGGER_DBWRITER_DB_WRITE_ENABLED);
 					if (propVal != null)
