@@ -192,8 +192,8 @@ PerfLog Editions
 PerfLog is available as free open source edition and a premium supported
 edition for IBM WebSphere Environment.
 
-PerfLog Community Edition (CE)
-------------------------------
+Pexus PerfLog Community Edition (CE)
+------------------------------------
 
 The free open source edition comes with Apache 2.0 License and includes the
 source code and binary jar file. Public Git repository are also available
@@ -213,12 +213,12 @@ from the following two locations:
 	Binary Downloads:
 		http://www.pexus.com/perflog
 
-IBM WebSphere Supported Edition
--------------------------------
+Pexus PerfLog - IBM WebSphere Supported Edition (SE)
+----------------------------------------------------
 
-The supported edition for IBM WebSphere comes with WebSphere binary files,
-documentation and full support and regular maintenance upgrades. Supported
-edition is priced per JVM. Please visit http://www.pexus.com/perflog for
+The Pexus PerfLog supported edition for IBM WebSphere comes with WebSphere
+binary files, documentation and full support and regular maintenance upgrades.
+Supported edition is priced per JVM. Please visit http://www.pexus.com/perflog for
 more details on pricing. Supported Edition also comes with sources for
 customization if required.
 
@@ -232,8 +232,8 @@ Building PerfLog.jar from Sources
 ---------------------------------
 
 The dependency list for PerfLog and PerfLogAppLogger project are given below
-to help you in planning your build environment if you choose to build from
-the sources.
+to help you in planning your build environment if you choose to customize and 
+build PerfLog and PerfLogAppLogger yourself.
 
 	PerfLog:
 		ojdbc6.jar (Oracle JDBC driver jar) 
@@ -249,22 +249,23 @@ the sources.
 		J2EE Runtime jars (Available in your J2EE environment)
 
 	PerfLogAppLogger:
-		PerfLog.jar (dependent on PerfLog.jar) Standard
-		Java Runtime jars J2EE Runtime jars - if using
-		Asynchronous Logging via CommonJ Work Manager
+		PerfLog.jar (dependent on PerfLog.jar) 
+		Standard Java Runtime jars
+		J2EE Runtime jars - if using Asynchronous Logging for CommonJ Work Manager APIs
 
 You can always use the binary jars -  PerfLog.jar and PerfLogAppLogger.jar
-if you intend to use them in your applications. Java docs and usage guide is
-included in the documentation to help you use them in your application. You
-will find the dependent jars in your J2EE environment.
+if you intend to use them in your applications without compiling from the sources.
+Java docs and usage guide is included in the documentation to help you use them in your 
+application. You will find the dependent jars in your J2EE environment.
 
 When building PerfLog jar from the sources you will see dependency to the
-following jars from the specified packages in addition to standard J2EE
+following jars from the specified packages and classes in addition to standard J2EE
 libraries.  You will have to download the dependent jars or use the version
 from your J2EE environment and include them in your build script,  if you
-intend to use these packages and classes. When using the provided PerfLog.jar
-binary in your application you will not need the depending jars unless you
-decide to use the appropriate filters or interceptor classes.
+intend to use these packages and classes. 
+
+When using the provided PerfLog.jar binary in your application you will not need the 
+depending jars unless you decide to use the appropriate filters or interceptor classes.
 
 	org.perf.log.filter.struts1
 		struts.jar wp.struts.standard.framework.jar (WebSphere Portal)
