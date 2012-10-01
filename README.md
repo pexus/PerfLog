@@ -229,11 +229,7 @@ Pexus LLC also offers integration and customization services for integrating
 PerfLog for other J2EE environments  and customer application.
 
 Building PerfLog.jar from Sources
-
-Build scripts are not provided because dependent jars and runtime jars varies
-depending on your usage and due to distribution restrictions on jars. These
-jars  will need to be downloaded from vendors site directly or use from your
-licensed IDE environment.
+---------------------------------
 
 The dependency list for PerfLog and PerfLogAppLogger project are given below
 to help you in planning your build environment if you choose to build from
@@ -260,13 +256,13 @@ the sources.
 You can always use the binary jars -  PerfLog.jar and PerfLogAppLogger.jar
 if you intend to use them in your applications. Java docs and usage guide is
 included in the documentation to help you use them in your application. You
-will find the dependent jar in your J2EE environment.
+will find the dependent jars in your J2EE environment.
 
 When building PerfLog jar from the sources you will see dependency to the
 following jars from the specified packages in addition to standard J2EE
-libraries.  You will have to download the dependent jars or licensed version
-from your environment and include them into your build environment if you
-intend to use these packages/classes. When using the provided PerfLog.jar
+libraries.  You will have to download the dependent jars or use the version
+from your J2EE environment and include them in your build script,  if you
+intend to use these packages and classes. When using the provided PerfLog.jar
 binary in your application you will not need the depending jars unless you
 decide to use the appropriate filters or interceptor classes.
 
@@ -305,22 +301,22 @@ Oracle databases.
 Documentation
 -------------
 
-Refer to included document on installing, configuring and using PerfLog jar.
-A sample application logger using JDK java.util.logging.* is also provided
-that shows how you can integrate PerfLog with your favorite application
-logger to capture debug trace data from your application code.
+Refer to included javadocs and documents on installing, configuring and using PerfLog jar.
+PerfLogAppLogger project  shows how you can integrate PerfLog with your favorite 
+application logger to capture debug trace data from your application code.
 
 Sample Web Application and Web Service application with source code are
 provided to show how you can configure and use the PerfLog package. The
 PerfLogAppLogger APIs are also used in the sample Web (PerfLogTestWebApp)
 and stand alone Java test application (PerfLogTestJavaApp)
 
-Directories in distribution zip
+Directory content in distribution archive
+-----------------------------------------
 	
 	The latest distribution zip files can be downloaded from:
 		http://www.pexus.com/perflog
 	
-	The directory content in the distribution are as follows: 
+	The directory content in the distribution archive are as follows: 
 
 	Database/ 
 		DDL for creating the perfDB database for persisting 
@@ -330,7 +326,7 @@ Directories in distribution zip
 	PerfLog/
 		source for PerfLog framework 
 	PerfLogAppLogger/
-		Sample application logger using using 
+		Sample application logger using  
 		java.util.logging.* APIs, enabled to use PerfLog framework
 	PerfLogMDB/
 		Optional Message Driven Bean (MDB) for PerfLog framework 
