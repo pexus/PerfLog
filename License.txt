@@ -27,7 +27,7 @@ PerfLog and associated files comes with the following Apache License 2.0
  	Author:Arthur Blake
  	Source: http://code.google.com/p/log4jdbc/
  	
- 2. org.json.simpl.*
+ 2. org.json.simple.*
  	License: http://www.apache.org/licenses/LICENSE-2.0
 	Author: FangYidong<fangyidong@yahoo.com.cn
 	Source: http://code.google.com/p/json-simple/
