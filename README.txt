@@ -1,20 +1,19 @@
-Pexus PerfLog - J2EE Performance and Diagnostics Logging Framework
-------------------------------------------------------------------
+Pexus PerfLog - Performance and Diagnostics Logging Framework for J2EE Applications
+-----------------------------------------------------------------------------------
 
 http://www.pexus.com/perflog
 
 What is Pexus PerfLog?
 ---------------------
 
-Pexus PerfLog is an open source J2EE performance and diagnostic logging framework. 
-It can be easily integrated with any standard J2EE application via standard J2EE
-configuration files to capture request performance metrics without writing any 
-custom code or modifying your J2EE application code. Performance metrics including
-JDBC SQLs can be persisted to log files and database. Log file data generated is 
-compatible with popular log scrapper products such as Splunk  for application 
-diagnostics and performance analytics. Data persisted to database can be used for 
-long term storage, aggregate metrics reporting and performance SLA (Service Level 
-Agreement) monitoring.
+Pexus PerfLog is an open source performance and diagnostic logging framework for 
+J2EE/Java Applications. It can be easily integrated with any standard J2EE 
+application via standard J2EE configuration files to capture request performance 
+metrics without writing any custom code or modifying your J2EE application code. 
+Performance metrics including JDBC SQLs can be persisted to log files and database. 
+Log file data generated is compatible with popular log file monitoring tools such as 
+Splunk. Data persisted to database can be used for long term storage, aggregate 
+performance metrics reporting and performance SLA (Service Level Agreement) monitoring.
 
 The PerfLog package also includes an application logger - PerfLogAppLogger, that
 is integrated with PerfLog and is based on standard Java java.util.logging.*
@@ -56,7 +55,7 @@ contextual data for the following type of J2EE requests:
 
 		Future enhancements will include EJB3 requests.
 
-PerfLog use J2EE filter pattern to plug-in request interceptor classes without
+PerfLog uses J2EE filter pattern to plug-in request interceptor classes without
 changing application code. It can also be used within application code to
 monitor custom transactions.  Each request or transaction from a thread is
 assigned a globally unique identifier (Guid). Each request is associated
