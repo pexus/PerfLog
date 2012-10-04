@@ -32,8 +32,8 @@ improvements. IT Operations team can leverage log monitoring tools such as Splun
 to narrow down erring application requests, web services and SQL queries.
 
 PerfLog and PerfLogAppLogger packages are available as a free open source
-community edition with Apache 2.0 License and a premium supported edition for
-IBM WebSphere environments. The community edition comes with PerfLog and PerfLogAppLogger
+community edition with Apache 2.0 License and a supported edition for IBM WebSphere
+J2EE application server. The community edition comes with PerfLog and PerfLogAppLogger
 binary jars, source and documentation. See Pexus PerfLog Editions section later in 
 this document for more details.
 
@@ -156,14 +156,25 @@ Runtime Environment Changes
 ---------------------------
 
 Pexus PerfLogg uses standard J2EE APIs and will work unchanged in all J2EE
-environment.  It has been tested in Tomcat and IBM WebSphere environment.
-However some minor change may be required for other J2EE Environment especially
-to get the JVM instance name in a clustered environment. Retrieving the
-JVM instance name is vendor dependent. The relevant code is abstracted
-and can be implemented easily using the provided interface. Sample skeleton
-implementations are provided for JBOSS, Geronimo, GlassFish, and  Weblogic
-application servers. Use the runtimeEnv.properties within your application
-to override default environment properties. 
+environment. The only J2EE environment dependent code is to determine the JVM instance
+name in a clustered environment. Each J2EE vendor has it's on way to name a JVM instance
+in a clustered environment.
+
+Depending on your J2EE environment, you will have to provide an implementation 
+class to get the JVM instance name in a clustered environment. This is configured in
+runtimeEnv.properties file, where the implementation for JvmCloneGetter interface can be
+specified for the required J2EE environment. 
+
+Implementation for Tomcat returns the "name,jvmRoute" attribute for the "Catalina:type=Engine"
+JMX object.
+
+Implementation for IBM WebSphere returns the "cell\node\server" to identify the JVM instance.
+
+The default implementation returns the ManagementFactory.getRuntimeMXBean().getName() which 
+is the proceed-id@hostname to identify the JVM instance.
+
+Implementation for JBOSS, GlassFish, Oracle App Server, and Weblogic currently returns the default
+implementation. This will be fixed in a later release.
 
 Property Files
 --------------
@@ -208,8 +219,8 @@ Pexus PerfLog Editions
 Pexus PerfLog is available as a free open source edition and a premium supported
 edition for IBM WebSphere Environment.
 
-Pexus PerfLog Community Edition (CE)
-------------------------------------
+Pexus PerfLog - Community Edition (CE)
+--------------------------------------
 
 Pexus PerfLog CE is an open source edition comes with Apache 2.0 License and includes
 the source code and binary jar file. Public Git repository are also available
@@ -232,27 +243,27 @@ from the following two locations:
 		http://download.pexus.net/perflog/CE/PerfLog_CE.tar
 		http://download.pexus.net/perflog/CE/PerfLog_CE.tar.gz
 
-Pexus PerfLog - IBM WebSphere Supported Edition (SE)
-----------------------------------------------------
+Pexus PerfLog - Supported Edition (SE) for IBM WebSphere
+--------------------------------------------------------
 
-The Pexus PerfLog supported edition for IBM WebSphere comes with binary jars,
+The Pexus PerfLog Supported Edition (SE) for IBM WebSphere comes with binary jars,
 Sample applications binary files, documentation, full e-mail support, and regular 
 maintenance upgrades. Supported edition is priced per JVM. Please visit 
-http://www.pexus.com/perflog for more details on pricing or contacting Pexus LLC. 
-Supported Edition also comes with sources for customization if required.
+http://www.pexus.com/perflog for more details on pricing or contact Pexus LLC. 
+
 
 Pexus PerfLog Customization Services
 ------------------------------------
 
 Pexus LLC also offers integration and customization consulting services for integrating
-Pexus PerfLog for IBM WebSphere and other standard J2EE environment and customer application.
+Pexus PerfLog SE for IBM WebSphere and other standard J2EE environment and customer applications.
 
-Building Pexus PerfLog and PerfLogAppLogger Community Edition
--------------------------------------------------------------
+Building Pexus PerfLog Community Edition
+----------------------------------------
 
-The dependency list for PerfLog and PerfLogAppLogger project are given below
+The dependency list for building PerfLog and PerfLogAppLogger jars are given below
 to help you in planning your build scripts if you choose to extend, customize
-and build PerfLog and PerfLogAppLogger yourself.
+and build PerfLog and PerfLogAppLogger sources yourself.
 
 	PerfLog:
 		ojdbc6.jar (Oracle JDBC driver jar) 
@@ -277,17 +288,18 @@ if you intend to use them in your applications without compiling from the source
 Java docs and usage guide is included in the documentation to help you use them in your 
 application. You will find the dependent jars in your J2EE environment.
 
-When building PerfLog jar from the sources you will see dependency to the
+When building PerfLog jar from the sources you will see dependencies to the
 following jars from the specified packages and classes in addition to standard J2EE
-libraries.  You will have to download the dependent jars or use the version
-from your J2EE environment and include them in your build script,  if you
+libraries.  You will have to download the dependent jars from vendor sites or use the 
+version from your J2EE environment and include them in your build script,  if you
 intend to use these packages and classes. 
 
 When using the provided PerfLog.jar binary in your application you will not need the 
 depending jars unless you decide to use the appropriate filters or interceptor classes.
 
 	org.perf.log.filter.struts1
-		struts.jar wp.struts.standard.framework.jar (WebSphere Portal)
+		struts.jar wp.struts.standard.framework.jar 
+			(IBM WebSphere Portal)
 
 	org.perf.log.filter.portal
 		wp.base.jar wp.model.api.jar
@@ -314,7 +326,7 @@ time errors.
 
 PerfLog has been tested with Tomcat 7.x and IBM WebSphere 6/7/8 Environment
 and with DB2, MySQL and Oracle Database and Derby databases.  For storing
-performance data the DBWriter code has been tested with DB2, MySQL and
+performance data the DBWriter class has been tested with DB2, MySQL and
 Oracle databases.
 
 
