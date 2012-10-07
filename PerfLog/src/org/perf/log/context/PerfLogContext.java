@@ -246,7 +246,7 @@ public class PerfLogContext {
 			PerfLogContextConstants.SID+"=null"+"|"+
 			PerfLogContextConstants.USER_ID+"=null"+"|"+
 			PerfLogContextConstants.THREAD_ID+"="+Thread.currentThread().getId()+"|"+
-			PerfLogContextConstants.HOST_ID+"="+RuntimeEnvHelper.getInstance().getHostName()+"|"+
+			PerfLogContextConstants.HOST_NAME+"="+RuntimeEnvHelper.getInstance().getHostName()+"|"+
 			PerfLogContextConstants.JVM_CLONE_ID+"="+RuntimeEnvHelper.getInstance().getCloneName()+"|"+
 			PerfLogContextConstants.JVM_DEPTH+"=1|"+
 			PerfLogContextConstants.FILTER_DEPTH+"=0"+
@@ -259,7 +259,7 @@ public class PerfLogContext {
 			PerfLogContextConstants.SID+"="+thisThreadPerfLogContext.getRequestSessionId()+"|"+
 			PerfLogContextConstants.USER_ID+"="+thisThreadPerfLogContext.getUserId()+"|"+
 			PerfLogContextConstants.THREAD_ID+"="+thisThreadPerfLogContext.getThreadId()+"|"+
-			PerfLogContextConstants.HOST_ID+"="+thisThreadPerfLogContext.getHostId()+"|"+
+			PerfLogContextConstants.HOST_NAME+"="+thisThreadPerfLogContext.getHostId()+"|"+
 			PerfLogContextConstants.HOST_IP+"="+thisThreadPerfLogContext.getHostIp()+"|"+
 			PerfLogContextConstants.JVM_CLONE_ID+"="+thisThreadPerfLogContext.getJvmCloneId()+"|"+
 			PerfLogContextConstants.JVM_DEPTH+"="+thisThreadPerfLogContext.getJvmDepth()+"|"+

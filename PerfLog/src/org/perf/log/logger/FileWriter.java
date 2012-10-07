@@ -86,9 +86,9 @@ public class FileWriter
 		buf.append(" :txnType="+perfLogData.getTransactionType());
 		buf.append(" :txnDate="+txnDate);
 		buf.append(" :txnTime="+perfLogData.getTransactionTime());
-		buf.append(" :userid="+perfLogData.getUserId());
+		buf.append(" :userId="+perfLogData.getUserId());
 		buf.append(" :guid="+perfLogData.getGuid());
-		buf.append(" :sessionid="+perfLogData.getSessionId());
+		buf.append(" :sessionId="+perfLogData.getSessionId());
 		buf.append(" :threadName="+perfLogData.getThreadName());
 		buf.append(" :threadId="+perfLogData.getThreadId());
 		buf.append(" :serverName="+ perfLogData.getServerName());

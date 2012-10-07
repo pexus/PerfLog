@@ -410,9 +410,9 @@ public class PerfLogData implements Externalizable
 		 buf.append(" :txnType="+getTransactionType());
 		 buf.append(" :txnDate="+getTransactionDate());
 		 buf.append(" :txnTime="+getTransactionTime());
-		 buf.append(" :userid="+getUserId());
+		 buf.append(" :userId="+getUserId());
 		 buf.append(" :guid="+getGuid());
-		 buf.append(" :sessionid="+getSessionId());
+		 buf.append(" :sessionId="+getSessionId());
 		 buf.append(" :threadName="+getThreadName());
 		 buf.append(" :threadId="+getThreadId());
 		 buf.append(" :serverName="+getServerName());
