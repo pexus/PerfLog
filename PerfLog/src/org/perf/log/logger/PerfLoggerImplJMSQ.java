@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.perf.log.logger;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 import javax.jms.Connection;
@@ -88,6 +86,7 @@ public class PerfLoggerImplJMSQ implements PerfLogger
 	}
 	
 
+	@Override
 	public boolean getLogEnabled(long txnTimeInMillis) 
 	{
 		return (LoggerProperties.getInstance().isPerfLoggerImplLogEnabled() 
@@ -97,6 +96,7 @@ public class PerfLoggerImplJMSQ implements PerfLogger
 	}
 
 	
+	@Override
 	public void setLogEnabled(boolean inLogEnabled) 
 	{
 		logEnabled = inLogEnabled;

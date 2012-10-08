@@ -25,7 +25,6 @@ import java.util.Properties;
 import java.util.logging.*;
 
 import org.perf.log.context.PerfLogContextHelper;
-import org.perf.log.logger.FileWriter;
 import org.perf.log.logger.PerfLogMessageFormatter;
 import org.perf.log.utils.JvmCloneGetterFactory;
 import org.perf.log.utils.PropertyFileLoader;
@@ -291,7 +290,10 @@ public class AppLoggerImpl implements org.perf.log.app.logger.Logger {
 			PerfLogContextHelper.addToDebugContext("trace", buf.toString());
 		}
 		// Dump the context data when there is an error
-		if (javaUtilLogger.isLoggable(javaUtilLoggerLevel) && javaUtilLoggerLevel == Level.SEVERE) {
+		// and throwable is not null
+		if (javaUtilLogger.isLoggable(javaUtilLoggerLevel) 
+				&& javaUtilLoggerLevel == Level.SEVERE 
+				&& t!=null) {
 			PerfLogContextHelper.dumpPerfLogContext(javaUtilLogger);
 		}
 
@@ -301,11 +303,13 @@ public class AppLoggerImpl implements org.perf.log.app.logger.Logger {
 		return loggerName;
 	}
 
+	@Override
 	public void setLoggerName(String loggerName) {
 
 		this.loggerName = loggerName;
 	}
 
+	@Override
 	public void setLevel(Level level) {
 
 		if (javaUtilLogger != null)

@@ -1,1 +1,1 @@
-Date: 2012-10-07 Version: 1.2.2 Build: 46 Edition:Community Edition
+Date: 2012-10-07 Version: 1.2.2 Build: 47 Edition:Community Edition
