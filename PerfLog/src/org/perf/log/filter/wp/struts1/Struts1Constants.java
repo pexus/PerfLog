@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright 2012 Pradeep Nambiar,  Pexus LLC
  * 
- * Source File: src/org/perf/log/logger/PerfLoggerImplStdOut.java 
+ * Source File: src/org/perf/log/filter/struts1/wp/Struts1Constants.java 
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,30 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.perf.log.logger;
+package org.perf.log.filter.wp.struts1;
 
-import org.perf.log.properties.LoggerProperties;
+public class Struts1Constants {
+	public static final String ACTION_SERVLET = "actionServlet";
 
-public class PerfLoggerImplStdOut implements PerfLogger {
-	
-	@Override
-	public boolean getLogEnabled(long txnTimeInMillis) {
+	public static final String ACTION_MAPPING_NAME = "actionMappingName";
 
-		return (LoggerProperties.getInstance().isPerfLoggerImplLogEnabled() 
-				&& 
-				(txnTimeInMillis >= 
-					LoggerProperties.getInstance().getPerfLoggerImplLogThreshold()));
-	}
-	
-	@Override
-	public void setLogEnabled(boolean inLogEnabled) {
-	}
+	public static final String ACTION_MAPPING_TYPE = "actionMappingType";
 
-	@Override
-	public void log(PerfLogData perfLogData) {
-		if(getLogEnabled(perfLogData.getTransactionTime())) {
-		    System.out.println(perfLogData.getFullFormatedPerfDataStr());
-		  }
-		}
+	public static final String ACTION_FORM = "actionForm";
 
+	public static final String ACTION = "action";
 }

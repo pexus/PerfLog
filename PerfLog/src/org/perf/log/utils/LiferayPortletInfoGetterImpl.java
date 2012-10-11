@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright 2012 Pradeep Nambiar,  Pexus LLC
  * 
- * Source File: src/org/perf/log/logger/PerfLoggerImplStdOut.java 
+ * Source File: src/org/perf/utils/LiferayPortletInfoGetterImpl.java 
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,30 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.perf.log.logger;
+package org.perf.log.utils;
 
-import org.perf.log.properties.LoggerProperties;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 
-public class PerfLoggerImplStdOut implements PerfLogger {
-	
+public class LiferayPortletInfoGetterImpl implements PortletInfoGetter {
+
 	@Override
-	public boolean getLogEnabled(long txnTimeInMillis) {
-
-		return (LoggerProperties.getInstance().isPerfLoggerImplLogEnabled() 
-				&& 
-				(txnTimeInMillis >= 
-					LoggerProperties.getInstance().getPerfLoggerImplLogThreshold()));
-	}
-	
-	@Override
-	public void setLogEnabled(boolean inLogEnabled) {
+	public String getName(PortletRequest portletReq, PortletResponse portletResp) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public void log(PerfLogData perfLogData) {
-		if(getLogEnabled(perfLogData.getTransactionTime())) {
-		    System.out.println(perfLogData.getFullFormatedPerfDataStr());
-		  }
-		}
+	public String getPageName(PortletRequest portletReq,
+			PortletResponse portletResp) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

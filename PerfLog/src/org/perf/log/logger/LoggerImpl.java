@@ -170,10 +170,12 @@ public class LoggerImpl implements Logger {
 	}
 	  
 
+	@Override
 	public String getLoggerName() {
 		return loggerName;
 	}
 
+	@Override
 	public void setLoggerName(String loggerName) {
 	
 		this.loggerName = loggerName;
@@ -260,6 +262,7 @@ public class LoggerImpl implements Logger {
 			JDKLogger.setLevel(Level.WARNING);
 	}
 
+	@Override
 	public void setDebugEnabled(boolean debugEnabled) {
 		
 		if(JDKLogger != null && debugEnabled)

@@ -27,7 +27,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.perf.log.context.PerfLogContext;
-import org.perf.log.context.PerfLogContextConstants;
 import org.perf.log.txn.types.PerfLogTxnClass;
 
 

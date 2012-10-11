@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright 2012 Pradeep Nambiar,  Pexus LLC
  * 
- * Source File: src/org/perf/log/filter/struts1/PerfStrutsRequestProcessor.java 
+ * Source File: src/org/perf/log/filter/struts1/wp/PerfStrutsRequestProcessor.java 
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.perf.log.filter.struts1;
+package org.perf.log.filter.wp.struts1;
 
 import java.io.IOException;
 import javax.servlet.ServletException;

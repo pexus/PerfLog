@@ -23,10 +23,12 @@ public class RuntimeEnvProperties {
 		
 		private static final String RUNTIME_ENV_CONTAINER_TYPE = "runtime.env.containerType";
 		private static final String RUNTIME_ENV_JVM_CLONE_GETTER_IMPL_CLASS = "runtime.env.JvmCloneGetter.Impl";
+		private static final String RUNTIME_ENV_PORTLET_INFO_GETTER_IMPL_CLASS = "runtime.env.PortletInfoGetter.Impl";
 		private static RuntimeEnvProperties _instance = null;
 		private static Object syncObject = new Object();
 		private String containerType = null;
 		private String jvmCloneGetterImplClass = null;
+		private String portletInfoGetterImplClass = null;
 			
 	   private RuntimeEnvProperties(){
 	    
@@ -44,6 +46,7 @@ public class RuntimeEnvProperties {
 	    	
 	        	containerType  = props.getProperty(RUNTIME_ENV_CONTAINER_TYPE);
 	        	jvmCloneGetterImplClass =  props.getProperty(RUNTIME_ENV_JVM_CLONE_GETTER_IMPL_CLASS);
+	        	portletInfoGetterImplClass = props.getProperty(RUNTIME_ENV_PORTLET_INFO_GETTER_IMPL_CLASS);
 	        	
 	        }
 	        else {
@@ -60,6 +63,7 @@ public class RuntimeEnvProperties {
 	    	System.out.println("---- org.perf.log.properties.RuntimeEnvProperties ----");
 	    	System.out.println(RUNTIME_ENV_CONTAINER_TYPE + "=" + containerType);
 	    	System.out.println(RUNTIME_ENV_JVM_CLONE_GETTER_IMPL_CLASS + "=" +jvmCloneGetterImplClass);
+	    	System.out.println(RUNTIME_ENV_PORTLET_INFO_GETTER_IMPL_CLASS + "=" +portletInfoGetterImplClass);
 	    	
 	    	System.out.println("-------------------------------------------------------------------");
 	    	
@@ -82,6 +86,10 @@ public class RuntimeEnvProperties {
 
 		public static String getJvmCloneGetterImplClass() {
 			return getInstance().jvmCloneGetterImplClass;
+		}
+
+		public static String getPortletInfoGetterImplClass() {
+			return getInstance().portletInfoGetterImplClass;
 		}
 
 		

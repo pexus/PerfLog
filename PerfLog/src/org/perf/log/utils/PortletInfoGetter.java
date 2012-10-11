@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright 2012 Pradeep Nambiar,  Pexus LLC
  * 
- * Source File: src/org/perf/log/filter/struts1/Struts1Constants.java 
+ * Source File: src/org/perf/utils/PortletInfoGetter.java 
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.perf.log.filter.struts1;
+package org.perf.log.utils;
 
-public class Struts1Constants {
-	public static final String ACTION_SERVLET = "actionServlet";
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 
-	public static final String ACTION_MAPPING_NAME = "actionMappingName";
-
-	public static final String ACTION_MAPPING_TYPE = "actionMappingType";
-
-	public static final String ACTION_FORM = "actionForm";
-
-	public static final String ACTION = "action";
+/**
+ * @author pradeep
+ *
+ */
+public interface PortletInfoGetter {
+	String getName(PortletRequest portletReq, PortletResponse portletResp);
+	String getPageName(PortletRequest portletReq, PortletResponse portletResp);
 }

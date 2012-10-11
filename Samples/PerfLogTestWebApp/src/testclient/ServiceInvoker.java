@@ -19,23 +19,16 @@ package testclient;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.BindingProvider;
-
 import org.perf.log.app.logger.Logger;
 import org.perf.log.app.logger.LoggerFactory;
 import org.perf.log.context.PerfLogContextHelper;
 import org.perf.log.context.TxnData;
-import org.perf.log.logger.PerfLogData;
-import org.perf.log.txn.types.PerfLogTxnType;
-
 import test.HelloWorld;
 import test.HelloWorldDelegate;
 import test.HelloWorldServiceJaxRpcService;

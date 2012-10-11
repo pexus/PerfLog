@@ -20,8 +20,6 @@ package org.perf.log.filter.sql;
 import java.sql.SQLException;
 import javax.sql.XAConnection;
 
-import org.apache.derby.iapi.jdbc.ResourceAdapter;
-
 import com.mysql.jdbc.jdbc2.optional.MysqlXADataSource;
 
 

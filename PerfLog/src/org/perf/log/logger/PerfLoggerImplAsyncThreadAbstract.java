@@ -24,7 +24,6 @@ package org.perf.log.logger;
  * @author Pradeep Nambiar 2/10/2012
  */
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
 

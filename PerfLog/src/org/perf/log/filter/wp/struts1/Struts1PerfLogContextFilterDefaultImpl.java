@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright 2012 Pradeep Nambiar,  Pexus LLC
  * 
- * Source File: src/org/perf/log/filter/struts1/Struts1PerfLogContextFilterDefaultImpl.java 
+ * Source File: src/org/perf/log/filter/struts1/wp/Struts1PerfLogContextFilterDefaultImpl.java 
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.perf.log.filter.struts1;
+package org.perf.log.filter.wp.struts1;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -109,7 +109,7 @@ public class Struts1PerfLogContextFilterDefaultImpl implements
 		@SuppressWarnings("unchecked")
 		Enumeration<String> paramEnum = request.getParameterNames();
 		while (paramEnum.hasMoreElements()) {
-			String paramName = (String) paramEnum.nextElement();
+			String paramName = paramEnum.nextElement();
 			String paramValue = request.getParameter(paramName);
 			// check param name starts with a letter to reduce space usage
 			// ignore param name starting with a number

@@ -1,0 +1,23 @@
+
+
+10/11/2012 - Version 1.2.4
+	* Changed property file loading to merge the overriding properties file with
+	  default property file included in PerfLog.jar and PerfLogAppLogger.jar. 
+	  Previous version would load only either of the files which requires the
+	  overriding property file to include all necessary property files from the
+	  default property file. This change enables the overriding property files i.e
+	  perfLog.properties, runtimeEnv.properties and perfLogAppLogger.properties to
+	  specify only the properties that is different from the default.
+	  Sample properties file with the default values are provided in the distribution
+	  in properties folder
+	
+
+10/09/2012 - Version 1.2.3
+	* Refactored Struts and Portlet Filters. Current Struts filter will
+	  work only with WebSphere Portal.
+	* Portlet Filter will work with any JSR-286 portlet container
+	* Getting Portlet Name and Page Name has been abstracted out as
+	  it is vendor dependent.
+
+10/07/2012 - Version 1.2.2 - Minor bug fixes and  README updates
+09/30/2012 - Version 1.2.1 - First released version

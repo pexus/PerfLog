@@ -42,6 +42,7 @@ public class NSBTunablePropertiesImpl extends CachedTunablePropertiesAbstract {
 	protected static Context cachedContext = null;
 	
 	// This implementation reads the tunable properties from the WebSphere name space binding
+	@Override
 	protected TunablePropertyValue readTunableProperty(String name) {
 		if (cachedContext == null) {
 			// init and cache ctx
@@ -73,12 +74,14 @@ public class NSBTunablePropertiesImpl extends CachedTunablePropertiesAbstract {
 				return null;
 	}
 
+	@Override
 	public String getStaticProperty(String name) {
 		// Abstract implementation method manages the property via readTunableProperty implementation
 		return getCachedTunableProperty(name, false);
 
 	}
 
+	@Override
 	public String getDynamicProperty(String name) {
 		// Abstract implementation method manages the property via readTunableProperty implementation
 		return getCachedTunableProperty(name, true);

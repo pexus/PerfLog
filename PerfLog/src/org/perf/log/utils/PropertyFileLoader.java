@@ -27,6 +27,7 @@ package org.perf.log.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -36,92 +37,94 @@ public class PropertyFileLoader {
 	static HashMap<String, Properties> cachedProperties = new HashMap<String, Properties>();
 	static int maxCachedPropertiesHashMapSize = 50;
 
-	public static Properties load(String propertyFileName,
+	// This method loads the default set of properties first
+	// Then it loads the overriding properties file
+	// It returns the merged properties to the caller and also caches the returned properties
+	public static Properties load(
+			String overridingPropertyFileName,
 			String defaultPropertyFileName,
 			ClassLoader ctxClassLoader,
 			ClassLoader callingClassLoader,
 			String callingClassName) {
 
-		InputStream in = null;
-		boolean loadingDefaultProperties = false;
-		URL urlForTheResourceLoaded = null;
-
-		// First try to load the propertyFIleName using the current thread's
-		// context class loader
-		// If not found use the passed in calling class's class loader to load
-		// the default property file
+		InputStream inDefaultPropertiesStream = null;
+		InputStream inOverridingPropertiesStream = null;
 		
+		URL urlForTheDefaultPropertiesLoaded = null;
+		URL urlForTheOverridingPropertiesLoaded = null;
+
+		// First try to get the input stream for default properties using the defaultPropertyFileName using the callingClassLoader
+		if (callingClassLoader != null) {
+			inDefaultPropertiesStream = callingClassLoader.getResourceAsStream(defaultPropertyFileName);
+			urlForTheDefaultPropertiesLoaded = callingClassLoader.getResource(defaultPropertyFileName);
+		}
+		
+		// Next try to get the input stream for overriding properties using overridingPropertyFileName
+		// using the context class loader
+			
 		if (ctxClassLoader != null) {
-			in = ctxClassLoader.getResourceAsStream(propertyFileName);
-			if (in != null)
-				urlForTheResourceLoaded = ctxClassLoader
-						.getResource(propertyFileName);
+			inOverridingPropertiesStream = ctxClassLoader.getResourceAsStream(overridingPropertyFileName);
+			if (inOverridingPropertiesStream != null)
+				urlForTheOverridingPropertiesLoaded = ctxClassLoader.getResource(overridingPropertyFileName);
 		}
-		if (in == null) {
-			loadingDefaultProperties = true;
-			// try loading the default properties using the calling class's
-			// class loader
+		
+		
+		if (inDefaultPropertiesStream == null && inOverridingPropertiesStream == null) {
 			System.out.println(PropertyFileLoader.class.getName()
-					+ ":Error loading " + propertyFileName
-					+ " attempting to load " + defaultPropertyFileName
-					+ " now.");
-
-			if (callingClassLoader != null) {
-				in = callingClassLoader
-						.getResourceAsStream(defaultPropertyFileName);
-				urlForTheResourceLoaded = callingClassLoader
-						.getResource(defaultPropertyFileName);
-			}
-
-		}
-
-		if (in == null) {
-			System.out.println(PropertyFileLoader.class.getName()
-					+ ":Error loading " + defaultPropertyFileName);
+					+ ":Error loading " + defaultPropertyFileName + " and " + overridingPropertyFileName + " properties files");
 			return null;
 		}
 
-		// else load properties and return the properties
-
-		String propertyFileUsed;
-		if (loadingDefaultProperties) {
-			propertyFileUsed = defaultPropertyFileName;
-		} else {
-			propertyFileUsed = propertyFileName;
-		}
+		// else check cache for the same set of properties already loaded or load properties and return the properties
+		
+		String cacheKey = null;
+		if(inDefaultPropertiesStream !=null && inOverridingPropertiesStream != null)
+			cacheKey = urlForTheDefaultPropertiesLoaded.getPath() + " + " + urlForTheOverridingPropertiesLoaded.getPath();
+		else if(inDefaultPropertiesStream == null)
+			cacheKey = urlForTheOverridingPropertiesLoaded.getPath();
+		else if(inOverridingPropertiesStream == null)
+			cacheKey = urlForTheDefaultPropertiesLoaded.getPath();
 
 		Properties props = null;
 		try {
 			// Check if the property file already loaded and cached..
-			if ((props = cachedProperties.get(urlForTheResourceLoaded.toString())) != null) {
+			if ((props = cachedProperties.get(cacheKey)) != null) {
 				System.out.println(PropertyFileLoader.class.getName() + ":"
-						+ urlForTheResourceLoaded
-						+ " properties already loaded, return from cache.");
+						+ cacheKey
+						+ " properties already loaded, returning from cache.");
 
 			} else {
 				props = new Properties();
-				props.load(in);
-				if (urlForTheResourceLoaded != null)
+				if(inDefaultPropertiesStream != null) {
+					props.load(inDefaultPropertiesStream);
 					System.out.println(PropertyFileLoader.class.getName()
-							+ ":URL for resource loaded:"
-							+ urlForTheResourceLoaded.getPath());
-				System.out.println(callingClassName
-						+ ":Loaded following properties from: "
-						+ propertyFileUsed);
-
-				System.out.println(
-						"\n--------------------------------------------------------------------------\n"
-						+ props.toString()
-						+ "\n-------------------------------------------------------------------------\n");
+							+ ":Loading properties from:"
+							+ urlForTheDefaultPropertiesLoaded.getPath());
+				}
+				if(inOverridingPropertiesStream != null) {
+					props.load(inOverridingPropertiesStream);
+					System.out.println(PropertyFileLoader.class.getName()
+							+ ":Overriding properties from:"
+							+ urlForTheOverridingPropertiesLoaded.getPath());
+				}
+				
+				System.out.println("------------ Merged Properties -----");
+				Enumeration <Object>  keys =  props.keys();
+				while(keys.hasMoreElements()) {
+					String key = (String)keys.nextElement();
+					System.out.println( key  + " = " + props.get(key));
+				}		
+				System.out.println("------------------------------------");
+				
 				// Put the loaded property in the cache
 				if(cachedProperties.size()>=maxCachedPropertiesHashMapSize)
 					cachedProperties.clear(); // and start over again
-				cachedProperties.put(urlForTheResourceLoaded.toString(), props);
+				cachedProperties.put(cacheKey, props);
 			}
 		} catch (IOException e) {
 			System.out.println(PropertyFileLoader.class.getName()
 					+ ":IO Exception loading property file: "
-					+ propertyFileUsed);
+					+ cacheKey);
 		}
 		return props;
 

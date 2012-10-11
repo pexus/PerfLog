@@ -211,6 +211,7 @@ public class LogQueueMetricTracker {
 				+ " Num Errored= " + this.getNumErrored()
 				);
 	}
+	@Override
 	public String toString() {
 		return getStats();
 	}

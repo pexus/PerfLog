@@ -40,6 +40,7 @@ import org.perf.log.context.PerfLogContextHelper;
 import org.perf.log.logger.Logger;
 import org.perf.log.logger.LoggerFactory;
 
+
 public class PerfPortletFilters implements ActionFilter, RenderFilter,
 		ResourceFilter, EventFilter {
 	

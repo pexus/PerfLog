@@ -70,20 +70,7 @@
 				org.perf.log.filter.ws.JaxRpcLogContextClientHandler
 			</handler-class>
 		</handler>
-	</service-ref>
-
-
-
-
-
-
-
-
-
-
-
-
-	
+	</service-ref>	
 	<filter>
 		<display-name>
 			PerfLogServletFilter
@@ -98,8 +85,5 @@
 	<filter-mapping>
 		<filter-name>PerfLogServletFilter</filter-name>
 		<url-pattern>/ServiceInvoker</url-pattern>
-		
-		
-
 	</filter-mapping>
 </web-app>

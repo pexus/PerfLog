@@ -21,8 +21,12 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.regex.Pattern;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.EventRequest;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
+import javax.portlet.RenderRequest;
+import javax.portlet.ResourceRequest;
 
 import org.perf.log.context.PerfLogContext;
 import org.perf.log.context.PerfLogContextHelper;
@@ -33,6 +37,7 @@ import org.perf.log.logger.PerfLogger;
 import org.perf.log.logger.PerfLoggerFactory;
 import org.perf.log.properties.LoggerProperties;
 import org.perf.log.txn.types.PerfLogTxnType;
+import org.perf.log.utils.PortletInfoGetterFactory;
 
 
 public class PortletPerfLogContextFilterDefaultImpl implements
@@ -51,7 +56,7 @@ public class PortletPerfLogContextFilterDefaultImpl implements
 		// The form name is identified from the request parameters where name =
 		// value
 		while (paramEnum.hasMoreElements()) {
-			String paramName = (String) paramEnum.nextElement();
+			String paramName = paramEnum.nextElement();
 			String paramValue = request.getParameter(paramName);
 			if (paramName.equals(paramValue))
 				formName = paramName;
@@ -74,7 +79,7 @@ public class PortletPerfLogContextFilterDefaultImpl implements
 		// rescan for paramEnum sorting out name/value pair without the formName
 		paramEnum = request.getParameterNames();
 		while (paramEnum.hasMoreElements()) {
-			String paramName = (String) paramEnum.nextElement();
+			String paramName = paramEnum.nextElement();
 			String paramValue = request.getParameter(paramName);
 			// if paramName or paramValue is null or blank add this info in the
 			// request data
@@ -124,7 +129,7 @@ public class PortletPerfLogContextFilterDefaultImpl implements
 		if(request.getUserPrincipal() != null)
 			PerfLogContextHelper.setUserId(request.getUserPrincipal().getName());
 		
-		RequestResponseUtils.pushPortletLogContext(request, response, phase);
+		pushPortletLogContext(request, response, phase);
 		// this is used to identify the transactions used to check in the current context.
 		PerfLogContextHelper.addToTxnList(perfLogContext.getValueForInfoContextName(PortletConstants.PORTAL_PAGE_NAME));
 		PerfLogContextHelper.addToTxnList(perfLogContext.getValueForInfoContextName(PortletConstants.PORTAL_PORTLET_NAME));
@@ -139,7 +144,7 @@ public class PortletPerfLogContextFilterDefaultImpl implements
 			// diagnosis
 			Enumeration<String> paramEnum = request.getParameterNames();
 			while (paramEnum.hasMoreElements()) {
-				String paramName = (String) paramEnum.nextElement();
+				String paramName = paramEnum.nextElement();
 				String paramValue = request.getParameter(paramName);
 				PerfLogContextHelper.addToRequestDataContext(paramName, paramValue, MAX_VALUE_SIZE);
 			}
@@ -194,6 +199,38 @@ private void logPerfMetrics(PortletRequest request, PortletResponse response, St
 		pData.setThrowable(t);
 		plogger.log(pData);
 	}
+
+// util function to push portlet specific context information
+public void pushPortletLogContext(PortletRequest request,
+		PortletResponse response, String phase) {
+
+	PerfLogContextHelper.pushInfoContext(PortletConstants.PORTAL_PAGE_NAME,
+			PortletInfoGetterFactory.getPortletInfoGetterImpl().getPageName(request, response));
+	PerfLogContextHelper.pushInfoContext(PortletConstants.PORTAL_PORTLET_NAME,
+			PortletInfoGetterFactory.getPortletInfoGetterImpl().getName(request, response));
+	PerfLogContextHelper.pushInfoContext(PortletConstants.PORTAL_PHASE, phase);
+	
+	// Push request type data if available
+	if(request instanceof ActionRequest) {
+		//ActionRequest actionRequest = (ActionRequest)request;
+		//PerfLogContextHelper.pushInfoContext("portletActionName", actionRequest.ACTION_NAME);			
+	}
+	else if(request instanceof EventRequest) {
+		EventRequest eventRequest = (EventRequest)request;
+		PerfLogContextHelper.pushInfoContext("portletEventName", eventRequest.getEvent().getName());
+		PerfLogContextHelper.addToRequestDataContext("portletEventQName", eventRequest.getEvent().getQName().getNamespaceURI());
+		
+	}
+	else if(request instanceof RenderRequest) {
+		// RenderRequest renderRequest = (RenderRequest)request;
+		// no useful data worth logging yet
+	}
+	else if(request instanceof ResourceRequest) {
+		ResourceRequest resourceRequest = (ResourceRequest)request;
+		PerfLogContextHelper.pushInfoContext("portletResourceID", resourceRequest.getResourceID());
+	}
+
+}
 
 
 }

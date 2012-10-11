@@ -17,10 +17,8 @@
  ******************************************************************************/
 package org.perf.log.properties;
 
-import java.io.InputStream;
 import java.util.Properties;
 
-import org.perf.log.logger.FileWriter;
 import org.perf.log.utils.PropertyFileLoader;
 
 

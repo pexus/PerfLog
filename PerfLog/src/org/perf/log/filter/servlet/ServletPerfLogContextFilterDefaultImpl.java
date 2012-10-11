@@ -76,7 +76,7 @@ public class ServletPerfLogContextFilterDefaultImpl implements ServletPerfLogCon
 				@SuppressWarnings("unchecked")
 				Enumeration<String> paramEnum = request.getParameterNames();
 				while (paramEnum.hasMoreElements()) {
-					String paramName = (String) paramEnum.nextElement();
+					String paramName = paramEnum.nextElement();
 					String paramValue = request.getParameter(paramName);
 					// add request parameters names that start with an alphabet only
 					// Also limit value size to a maximum size
