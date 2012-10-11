@@ -179,26 +179,25 @@ implementation. This will be fixed in a later release.
 Property Files
 --------------
 
-PerfLog properties are defined in
+Default PerfLog properties are defined in
  
 	perfLogDefault.properties
 	and
 	runtimeEnvDefault.properties. 
 
-Applications including PerfLog.jar can include a customized version of property file
+Applications including PerfLog.jar can override any of the properties from the default
+by including the following property files in their source folder or in application classpath.
 
 	perfLog.properties 
 	and 
 	runtimeEnv.properties
 	 
-to override properties defined in the perfLogDefault.properties and 
-runtimeEnvDefault.properties file. Properties can also be overridden 
-using TunablePropertiesImplementation at runtime that enables dynamic lookup of 
-properties. This is extremely useful when you may have to tune to certain log 
-thresholds or enable or disable properties based on your environment at runtime 
-without re-deploying your application.  Tunable properties can be defined either using 
-IBM WebSphere Name Space Binding or via URL resource.  Dynamic properties are picked up at
-regular intervals. The refresh interval is defined in perfLogDefault.properties
+Properties can also be overridden using TunablePropertiesImplementation at runtime 
+that enables dynamic lookup of properties. This is extremely useful when you may have 
+to tune to certain log thresholds or enable or disable properties based on your environment
+at runtime without re-deploying your application.  Tunable properties can be defined either 
+using IBM WebSphere Name Space Binding or via URL resource.  Dynamic properties are picked 
+up at regular intervals. The refresh interval is defined in perfLogDefault.properties
 or perfLog.properties.
 
 PerfLogAppLogger properties are defined in

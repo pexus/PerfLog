@@ -6,7 +6,7 @@ org.perf.log.context
 org.perf.log.filter.portal
 org.perf.log.filter.servlet
 org.perf.log.filter.sql
-org.perf.log.filter.struts1
+org.perf.log.filter.wp.struts1
 org.perf.log.filter.ws
 org.perf.log.logger
 org.perf.log.mdb
