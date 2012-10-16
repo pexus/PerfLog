@@ -27,7 +27,7 @@ PerfLog.jar Properties Files
 Optional property File - txnThresholdOverride.properties
 --------------------------------------------------------
 	txnThresholdOverride.properties is an optional properties file that can be included
-	in the src folder an application or in the application classpath. 
+	in the src folder of the application or in the application classpath. 
 	Request response time threshold value is used to decide if
 	the PerfLog context data needs to be dumped when deleting the PerfLog context.
 	(PerfLog context is deleted when the request leaves the JVM).

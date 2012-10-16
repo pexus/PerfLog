@@ -142,56 +142,53 @@ and implementing class can be specified in runtimeEnv.properties file.
 PortletInfoGetter implementation for IBM WebSphere Portal is included. Default implementation returns the portlet ID
 for portlet name and portlet context path for portlet page name.
 
-Property Files
---------------
+Property Files - PerfLog.jar
+---------------------------------------------
+PerfLog.jar  includes the following default properties files: 
 
-	PerfLog.jar Properties Files
-	----------------------------
-	PerfLog.jar  includes the following default properties files: 
+ 	perfLogDefault.properties
+ 	runtimeEnvDefault.properties
 	
-	 	perfLogDefault.properties
-	 	runtimeEnvDefault.properties
-	
-	PerfLog would first load the above properties. If an application wants to override the 
-	default properties include
+PerfLog would first load the above properties. If an application wants to override the 
+default properties include
  
-		perfLog.properties
-		runtimeEnv.properties
+	perfLog.properties
+	runtimeEnv.properties
 	 
-	files in the application src folder or in the application class path.
+files in the application src folder or in the application class path.
 
-	PerfLog would merge default properties and overriding properties.
+PerfLog would merge default properties and overriding properties.
 	
-	Application can also use tunable properties implementation to additionally tune properties
-	at runtime. See included documentation for more details on how to use tunable properties.
+Application can also use tunable properties implementation to additionally tune properties
+at runtime. See included documentation for more details on how to use tunable properties.
 
-   	Optional property File - txnThresholdOverride.properties
-  	--------------------------------------------------------
-	txnThresholdOverride.properties is an optional properties file that can be included
-	in the src folder an application or in the application classpath. 
-	Request response time threshold value is used to decide if
-	the PerfLog context data needs to be dumped when deleting the PerfLog context.
-	(PerfLog context is deleted when the request leaves the JVM).
-	If there are known transaction that takes more than the default
-	response time threshold as  specified in PerfLogDefault.properties or
-	the overriding perfLog.properties file, then this file can be used to override this 
-	threshold for the specific transactions.
+Property File - txnThresholdOverride.properties (Optional)
+----------------------------------------------------------
+txnThresholdOverride.properties is an optional properties file that can be included
+in the src folder of the application or in the application classpath. 
+Request response time threshold value is used to decide if
+the PerfLog context data needs to be dumped when deleting the PerfLog context.
+(PerfLog context is deleted when the request leaves the JVM).
+If there are known transaction that takes more than the default
+response time threshold as  specified in PerfLogDefault.properties or
+the overriding perfLog.properties file, then this file can be used to override this 
+threshold for the specific transactions.
 	
-	PerfLogAppLogger.jar Properties Files
-	-------------------------------------
-	PerfLogAppLogger.jar includes:
+Property File - PerfLogAppLogger.jar
+------------------------------------
+PerfLogAppLogger.jar includes:
 	
-		perfLogAppLoggerDefault.properties
+	perfLogAppLoggerDefault.properties
 
-	as default properties file. PerfLogAppLogger would first load the above properties.
-	If the application wants to override the default properties include
+as default properties file. PerfLogAppLogger would first load the above properties.
+If the application wants to override the default properties include
 	
-		perfLogAppLogger.properties
+	perfLogAppLogger.properties
 
-	file in the  application src folder  or in the application class path.
+file in the  application src folder  or in the application class path.
 
-	The properties from the above two files are merged with perfLogAppLogger.properties
-	overriding the default properties.
+The properties from the above two files are merged with perfLogAppLogger.properties
+overriding the default properties.
 
 Pexus PerfLog Editions
 ----------------------
@@ -263,7 +260,7 @@ if you choose to extend, customize and build PerfLog and PerfLogAppLogger from s
 		J2EE Runtime jars - if using Asynchronous Logging for CommonJ Work Manager APIs
 
 The compiled binary jars - PerfLog.jar and PerfLogAppLogger.jar are included in the 
-PerfLog CE download. Java docs and usage documentation are included in the docs folder.
+PerfLog CE download. Javadocs and usage documentation are included in the docs folder.
 
 
 When building PerfLog jar from the sources you will see the dependencies to the
@@ -329,7 +326,9 @@ Directory content in the distribution archive
 
 	Database/ 
 		DDL for creating the perfDB database for persisting 
-		performance log records 
+		performance log records
+	docs/
+		Documentation 
 	lib/ 
 		binary jars for PerfLog.jar and PerfLogAppLogger.jar
 	properties/
