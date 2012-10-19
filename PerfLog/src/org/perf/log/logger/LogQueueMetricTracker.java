@@ -196,20 +196,17 @@ public class LogQueueMetricTracker {
 			totalTimeSinceFirstDequeue = 
 				(System.currentTimeMillis() - firstDequeueTime)/(1000*60);
 			
-		
 		return( LINE_SEPARATOR + 
-				"Enqueue Rate/min (current/max)= ("
-				+ this.getEnqueueRate() + "/"
-				+ this.getMaxEnqueueRate() + ") Total Enqueues/Total time (min)= " 
-					+ this.enQueued  + "/" + totalTimeSinceFirstEnqueue + LINE_SEPARATOR  
-				+ "Dequeue Rate/min (current/max)= ("
-				+ this.getDequeueRate() + "/"
-				+ this.getMaxDequeueRate() + ") Total Dequeues/Total time (min)= " 
-					+ this .deQueued + "/" + totalTimeSinceFirstDequeue + LINE_SEPARATOR   
-				+ "Q Depth (current/max)= (" + qSize + "/" + maxQDepth 
-				+ ") Num Dropped= " + this.getNumDropped()
-				+ " Num Errored= " + this.getNumErrored()
-				);
+				"currentEnqueueRate="
+				+ this.getEnqueueRate() + " maxEnqueueRate="
+				+ this.getMaxEnqueueRate() + " totalEnqueues=" 
+					+ this.enQueued  + " totalTimeSinceFirstEnqueue=" + totalTimeSinceFirstEnqueue + " (in minutes)"+LINE_SEPARATOR  
+				+ "currentDequeueRate="
+				+ this.getDequeueRate() + " maxDequeueRate="
+				+ this.getMaxDequeueRate() + " totalDequeues=" 
+					+ this.deQueued + " totalTimeSinceFirstDequeue=" + totalTimeSinceFirstDequeue + " (in minutes)" + LINE_SEPARATOR   
+				+ "currentQDepth=" + qSize + " maxQDepth=" + maxQDepth + " numDropped=" + this.getNumDropped() + " numErrored=" + this.getNumErrored());
+		
 	}
 	@Override
 	public String toString() {

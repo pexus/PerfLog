@@ -27,14 +27,14 @@ package org.perf.log.logger;
  * @author Pradeep Nambiar 2/10/2012
  */
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import com.ibm.websphere.asynchbeans.Work;
 
 public class WasWmAsyncLoggerWorkerThread extends AsyncLoggerWorkerThreadAbstract implements Work {
 	
 	public WasWmAsyncLoggerWorkerThread(String asyncLogTaskName,
-			ConcurrentLinkedQueue<PerfLogData> logQueue,
+			LinkedBlockingQueue<PerfLogData> logQueue,
 			LogQueueMetricTracker logQueueMetricTracker) {
 		super(asyncLogTaskName,logQueue,logQueueMetricTracker);
 	}

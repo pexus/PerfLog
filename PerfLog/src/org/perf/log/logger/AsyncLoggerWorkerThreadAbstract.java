@@ -31,7 +31,9 @@ package org.perf.log.logger;
 
 
 import java.util.Properties;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 import org.perf.log.properties.LoggerProperties;
 import org.perf.log.properties.TunableProperties;
 import org.perf.log.utils.PropertyFileLoader;
@@ -39,7 +41,7 @@ import org.perf.log.utils.PropertyFileLoader;
 public abstract class AsyncLoggerWorkerThreadAbstract {
 	private final static Logger logger = LoggerFactory.getLogger(AsyncLoggerWorkerThreadAbstract.class.getName());
 	String asyncLogTaskName;
-	ConcurrentLinkedQueue<PerfLogData> logQueue;
+	LinkedBlockingQueue<PerfLogData> logQueue;
 	LogQueueMetricTracker logQueueMetricTracker;
 	// Property Names 
 	// following can be set dynamically
@@ -104,7 +106,7 @@ public abstract class AsyncLoggerWorkerThreadAbstract {
 	}
 
 	public AsyncLoggerWorkerThreadAbstract(String asyncLogTaskName,
-			ConcurrentLinkedQueue<PerfLogData> logQueue,
+			LinkedBlockingQueue<PerfLogData> logQueue,
 			LogQueueMetricTracker logQueueMetricTracker) {
 		super();
 		this.asyncLogTaskName = asyncLogTaskName;
@@ -135,45 +137,34 @@ public abstract class AsyncLoggerWorkerThreadAbstract {
 		
 		// iterate over the queue and write to file and DB
 		while (!terminateThread) {
-			long qSize = logQueueMetricTracker.getQSize();
-			if (qSize > 0 ) {
-				while (!logQueue.isEmpty()) {
-					PerfLogData logData = logQueue.remove();
-					// Write to performance log file if enabled
-					if(FileWriter.isFileWriterEnabled())
-						try {
-							FileWriter.write(logData);
-						} catch (Exception e) {
-							// An exception occurred, increment error count and continue
-							logQueueMetricTracker.incrementNumErrored();													
-						}
-					// Write to performance database if enabled
-					if(DBWriter.isDbWriterEnabled())
-						try {
-							DBWriter.write(logData);
-						} catch (Exception e) {
-							// An Exception occurred while writing to DB, increment error count and continue
-							logQueueMetricTracker.incrementNumErrored();							
-						}
-					logQueueMetricTracker.decrementSize();
-				}
-				
-			}
-
 			try {
-				logQueueMetricTracker.setThreadManagingThisQueueIsSleeping(true);
-				Thread.sleep(getThreadSleepTimeInMillis(), 0);
-				logQueueMetricTracker.setThreadManagingThisQueueIsSleeping(false);
-							
-			} catch (InterruptedException e) {
-				// could get interrupted by the thread that adds to this Q
-				// if interrupted continue..
-				logQueueMetricTracker.setThreadManagingThisQueueIsSleeping(false);
-			
+					PerfLogData logData = logQueue.poll(getThreadSleepTimeInMillis(), TimeUnit.MILLISECONDS);;
+					if(logData != null) {
+						// Write to performance log file if enabled
+						if(FileWriter.isFileWriterEnabled())
+							try {
+								FileWriter.write(logData);
+							} catch (Exception e) {
+								// An exception occurred, increment error count and continue
+								logQueueMetricTracker.incrementNumErrored();													
+							}
+						// Write to performance database if enabled
+						if(DBWriter.isDbWriterEnabled())
+							try {
+								DBWriter.write(logData);
+							} catch (Exception e) {
+								// An Exception occurred while writing to DB, increment error count and continue
+								logQueueMetricTracker.incrementNumErrored();							
+							}
+						logQueueMetricTracker.decrementSize();
+					}
+					if ((System.currentTimeMillis() - lastPrintStatTimeInMillis) > printStatTimeIntervalInMillis) {
+						System.out.println(asyncLogTaskName + ": PerfLog Stats :  " + logQueueMetricTracker.getStats());
+						lastPrintStatTimeInMillis = System.currentTimeMillis();
+					}
 			}
-			if ((System.currentTimeMillis() - lastPrintStatTimeInMillis) > printStatTimeIntervalInMillis) {
-				System.out.println(asyncLogTaskName + ": " + logQueueMetricTracker.getStats());
-				lastPrintStatTimeInMillis = System.currentTimeMillis();
+			catch(InterruptedException e) {
+				// ignore..
 			}
 		}
 		System.out.println(asyncLogTaskName + ": " + logQueueMetricTracker.getStats());

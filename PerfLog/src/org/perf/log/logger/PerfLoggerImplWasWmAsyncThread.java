@@ -23,7 +23,7 @@ package org.perf.log.logger;
  * @author Pradeep Nambiar 2/10/2012
  */
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -54,7 +54,7 @@ public class PerfLoggerImplWasWmAsyncThread extends PerfLoggerImplAsyncThreadAbs
 					for (int i = 0; i < numThreads; i++) {
 						logQueueMetricTrackerArray[i] = new LogQueueMetricTracker();
 						perfLogQueueArrayList.add(i,
-								new ConcurrentLinkedQueue<PerfLogData>());
+								new LinkedBlockingQueue<PerfLogData>());
 						asyncLogTaskArray[i] = new WasWmAsyncLoggerWorkerThread(
 								"asyncLoggerTaskThread_" + i,
 								perfLogQueueArrayList.get(i),

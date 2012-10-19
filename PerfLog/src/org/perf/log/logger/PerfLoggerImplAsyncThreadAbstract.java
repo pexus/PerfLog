@@ -26,11 +26,8 @@ package org.perf.log.logger;
 
 import java.util.ArrayList;
 import java.util.Properties;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
-
+import java.util.concurrent.LinkedBlockingQueue;
 import org.perf.log.properties.LoggerProperties;
-
 import org.perf.log.properties.TunableProperties;
 import org.perf.log.utils.PropertyFileLoader;
 
@@ -50,7 +47,7 @@ public abstract class PerfLoggerImplAsyncThreadAbstract implements PerfLogger {
 	// JNDI Resource for default work manager
 	static String workManagerResourceName = "wm/default";
 
-	static ArrayList<ConcurrentLinkedQueue<PerfLogData>> perfLogQueueArrayList = new ArrayList<ConcurrentLinkedQueue<PerfLogData>>();
+	static ArrayList<LinkedBlockingQueue<PerfLogData>> perfLogQueueArrayList = new ArrayList<LinkedBlockingQueue<PerfLogData>>();
 	
 	LogQueueMetricTracker logQueueMetricTrackerArray[];
 	
@@ -133,9 +130,7 @@ public abstract class PerfLoggerImplAsyncThreadAbstract implements PerfLogger {
 				perfLogQueueArrayList.get(index).add(perfLogData);
 				logQueueMetricTrackerArray[index].incrementNumDropped();
 			}
-			if (logQueueMetricTrackerArray[index].getThreadManagingThisQueue() != null &&
-					logQueueMetricTrackerArray[index].isThreadManagingThisQueueIsSleeping())
-				logQueueMetricTrackerArray[index].getThreadManagingThisQueue().interrupt();
+			
 			//--- End log
 		}
 
