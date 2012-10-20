@@ -24,7 +24,7 @@ package org.perf.log.app.logger;
 
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -52,7 +52,7 @@ public  class CommonJAsyncThreadLogger {
 	static String workManagerResourceName = "wm/default";
 	private Object syncObject = new Object();
 
-	static ArrayList<ConcurrentLinkedQueue<AppLogData>> appLogQueueArrayList = new ArrayList<ConcurrentLinkedQueue<AppLogData>>();
+	static ArrayList<LinkedBlockingQueue<AppLogData>> appLogQueueArrayList = new ArrayList<LinkedBlockingQueue<AppLogData>>();
 	LogQueueMetricTracker logQueueMetricTrackerArray[];
 	private static Context ctx = null;
 	
@@ -113,7 +113,7 @@ public  class CommonJAsyncThreadLogger {
 					for (int i = 0; i < numThreads; i++) {
 						logQueueMetricTrackerArray[i] = new LogQueueMetricTracker();
 						appLogQueueArrayList.add(i,
-								new ConcurrentLinkedQueue<AppLogData>());
+								new LinkedBlockingQueue<AppLogData>());
 						asyncLogTaskArray[i] = new CommonJAsyncWorkerThread(
 								"PerfLogAppLoggerAsyncWorkerThread_" + i,
 								appLogQueueArrayList.get(i),
@@ -168,9 +168,7 @@ public  class CommonJAsyncThreadLogger {
 				appLogQueueArrayList.get(index).add(appLogData);
 				logQueueMetricTrackerArray[index].incrementNumDropped();
 			}
-			if (logQueueMetricTrackerArray[index].getThreadManagingThisQueue() != null &&
-					logQueueMetricTrackerArray[index].isThreadManagingThisQueueIsSleeping())
-				logQueueMetricTrackerArray[index].getThreadManagingThisQueue().interrupt();
+			
 			//--- End log
 		}
 

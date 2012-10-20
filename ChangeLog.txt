@@ -1,4 +1,9 @@
-
+10/19/2012 - Version 1.2.5
+	* Changed asynchronous thread logger implementations to use 
+	LinkedBlockingQueue instead of ConcurrentLinkedQueue to better handle
+	the polling from the consumer thread. 
+	* Also updated PerfLogAppLogger
+	asynchronous thread logger implementation with the same change.
 
 10/11/2012 - Version 1.2.4
 	* Changed property file loading to merge the overriding properties file with

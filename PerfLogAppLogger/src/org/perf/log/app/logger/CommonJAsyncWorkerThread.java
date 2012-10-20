@@ -18,17 +18,16 @@
 package org.perf.log.app.logger;
 
 /**
- * WebSphere Work Manager Worker Thread for logging to a file and database
- * The thread is created in PerfLoggerImplWasWmAsyncThread class
- * Multiple threads can be created that listens to independent queues
- * The PerfLoggerImplWasWmAsyncThread class uses a simple round robin
- * to queue to multiple queues
+ * WebSphere Work Manager Worker Thread for logging to a file 
  * 
+ * Multiple threads can be created that listens to independent queues
+ *  
  * @author Pradeep Nambiar 9/27/2012
  */
 
 import java.util.Properties;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.perf.log.logger.LogQueueMetricTracker;
 import org.perf.log.utils.PropertyFileLoader;
@@ -38,7 +37,7 @@ import commonj.work.Work;
 public class CommonJAsyncWorkerThread implements Work {
 
 	String asyncLogTaskName;
-	ConcurrentLinkedQueue<AppLogData> logQueue;
+	LinkedBlockingQueue<AppLogData> logQueue;
 	LogQueueMetricTracker logQueueMetricTracker;
 
 	// Property Names
@@ -95,7 +94,7 @@ public class CommonJAsyncWorkerThread implements Work {
 	}
 
 	public CommonJAsyncWorkerThread(String asyncLogTaskName,
-			ConcurrentLinkedQueue<AppLogData> logQueue,
+			LinkedBlockingQueue<AppLogData> logQueue,
 			LogQueueMetricTracker logQueueMetricTracker) {
 		super();
 		this.asyncLogTaskName = asyncLogTaskName;
@@ -104,12 +103,14 @@ public class CommonJAsyncWorkerThread implements Work {
 		initProperties();
 	}
 
+	@Override
 	public void release() {
 		// stop the thread
 		terminateThread = true;
 
 	}
 
+	@Override
 	public void run() {
 		Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 		// add thread name to the task name
@@ -123,42 +124,29 @@ public class CommonJAsyncWorkerThread implements Work {
 		System.out.println(asyncLogTaskName + ": "
 				+ logQueueMetricTracker.getStats());
 
-		// iterate over the queue and write to file and DB
+		// iterate over the queue and write to application log file
 		while (!terminateThread) {
-			long qSize = logQueueMetricTracker.getQSize();
-			if (qSize > 0) {
-				while (!logQueue.isEmpty()) {
-					AppLogData appLogData = logQueue.remove();
-					if (appLogData.throwable != null)
-						appLogData.javaUtilLogger.log(
-								appLogData.javaUtilLoggerLevel,
-								appLogData.logData, appLogData.throwable);
-					else
-						appLogData.javaUtilLogger.log(
-								appLogData.javaUtilLoggerLevel,
-								appLogData.logData);
-					logQueueMetricTracker.decrementSize();
-				}
+			try {	
+					AppLogData appLogData = logQueue.poll(getThreadSleepTimeInMillis(), TimeUnit.MILLISECONDS);
+					if(appLogData != null) {
+						if (appLogData.throwable != null)
+							appLogData.javaUtilLogger.log(
+									appLogData.javaUtilLoggerLevel,
+									appLogData.logData, appLogData.throwable);
+						else
+							appLogData.javaUtilLogger.log(
+									appLogData.javaUtilLoggerLevel,
+									appLogData.logData);
+						logQueueMetricTracker.decrementSize();
+					}
+					if ((System.currentTimeMillis() - lastPrintStatTimeInMillis) > printStatTimeIntervalInMillis) {
+						System.out.println(asyncLogTaskName + ": PerfLogAppLogger Stats: "
+								+ logQueueMetricTracker.getStats());
+						lastPrintStatTimeInMillis = System.currentTimeMillis();
+					}
 			}
-
-			try {
-				logQueueMetricTracker
-						.setThreadManagingThisQueueIsSleeping(true);
-				Thread.sleep(getThreadSleepTimeInMillis(), 0);
-				logQueueMetricTracker
-						.setThreadManagingThisQueueIsSleeping(false);
-
-			} catch (InterruptedException e) {
-				// could get interrupted by the thread that adds to this Q
-				// if interrupted continue..
-				logQueueMetricTracker
-						.setThreadManagingThisQueueIsSleeping(false);
-
-			}
-			if ((System.currentTimeMillis() - lastPrintStatTimeInMillis) > printStatTimeIntervalInMillis) {
-				System.out.println(asyncLogTaskName + ": "
-						+ logQueueMetricTracker.getStats());
-				lastPrintStatTimeInMillis = System.currentTimeMillis();
+			catch(InterruptedException e) {
+				// ignore..
 			}
 		}
 		System.out.println(asyncLogTaskName + ": "
@@ -198,6 +186,7 @@ public class CommonJAsyncWorkerThread implements Work {
 		printStatTimeIntervalInMillis = inPrintStatTimeIntervalInMillis;
 	}
 
+	@Override
 	public boolean isDaemon() {
 
 		return true;
