@@ -220,20 +220,13 @@ from the following two locations:
 		http://download.pexus.net/perflog/CE/PerfLog_CE.tar
 		http://download.pexus.net/perflog/CE/PerfLog_CE.tar.gz
 
-Pexus PerfLog - Supported Edition (SE) for IBM WebSphere
---------------------------------------------------------
 
-The Pexus PerfLog Supported Edition (SE) for IBM WebSphere comes with binary jars,
-sample test/demo binary files, documentation, full e-mail support, and regular 
-maintenance upgrades. Supported edition is priced per JVM. Please visit 
-http://www.pexus.com/perflog for more details on pricing or contact Pexus LLC. 
+Pexus PerfLog Customization Services and Support for IBM WebSphere environment
+------------------------------------------------------------------------------
 
-
-Pexus PerfLog Customization Services
-------------------------------------
-
-Pexus LLC also offers integration and customization consulting services in integrating
-Pexus PerfLog SE for IBM WebSphere and other standard J2EE environment and customer applications.
+Pexus offers support for IBM WebSphere environment, integration and customization consulting 
+services in integrating PerfLog  for IBM WebSphere and other standard J2EE environment
+and customer applications.
 
 Building Pexus PerfLog Community Edition
 ----------------------------------------
@@ -354,8 +347,3 @@ Copyright(C) 2012 Pexus LLC
 	Pexus LLC - http://www.pexus.com
  	Pexus PerfLog Info - http://www.pexus.com/perflog
  	
- 	
-Author
-
-	Pradeep Nambiar, Pexus LLC
-
