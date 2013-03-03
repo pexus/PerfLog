@@ -42,8 +42,6 @@ import org.perf.log.utils.RuntimeEnvHelper;
  * Struts Interceptors, Web Service handlers and SQL handlers etc. They are used to track requests with 
  * a JVM and across JVMs. The contextual data can be used by tools such as Splunk to correlate log outputs
  * for diagnosis
- * 
- * @author Pradeep Nambiar 2/10/2012
  */
 public class PerfLogContextHelper {
 	
@@ -676,6 +674,37 @@ public class PerfLogContextHelper {
 
 		}
 	}
+	
+	public static boolean isAwaitingReturnFromOutboundJvmCall() {
+		PerfLogContext thisThreadPerfLogContext = getCurrentThreadPerfLogContextObject();
+		if (thisThreadPerfLogContext !=null) {
+			return thisThreadPerfLogContext.isAwaitingReturnFromOutboundJvmCall();
+		}
+		else 
+			return false;
+	}
+	
+	public static void setAwatingReturnFromOutboundJvmCall(boolean flag) {
+		PerfLogContext thisThreadPerfLogContext = getCurrentThreadPerfLogContextObject();
+		if (thisThreadPerfLogContext !=null) {
+			thisThreadPerfLogContext.setAwaitingReturnFromOutboundJvmCall(flag);
+		}
+	}
+	
+	// Out bound JVM calls e.g. web service client call can return malformed soap response
+	// The JVM container can bypass the response handler in such cases. This puts the filter count out of sync
+	// causing the context to hang around even after the request is complete
+	// This method compensates for such scenarios 
+	public static void compensateForOutboundJvmCallExceptionIfAny() {
+		PerfLogContext thisThreadGuidContext = getCurrentThreadPerfLogContextObject();
+		if(thisThreadGuidContext != null && PerfLogContextHelper.isAwaitingReturnFromOutboundJvmCall()) {
+			logger.error("Compensating PerfLogContext state for uncaught Exception from outbound Jvm call for guid="+thisThreadGuidContext.getGuid());
+			// do an extra delete to adjust the filter count
+			PerfLogContextHelper.setAwatingReturnFromOutboundJvmCall(false);
+			PerfLogContextHelper.endPerfLogTxnMonitor();
+		}
+	}
+	
 	
 	// 
 	// Helper function to aid logging performance metrics from custom application code

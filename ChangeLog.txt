@@ -1,3 +1,10 @@
+3/2/2013 - Version 1.2.6
+    * Bug fix to clean up context when out going web service call exception 
+      prevents the handle response method being called.
+    * Minor changes PerfLog context class
+    * Default properties is set to not write to database. Performance metrics
+      are only written to log files by default
+      
 10/19/2012 - Version 1.2.5
 	* Changed asynchronous thread logger implementations to use 
 	LinkedBlockingQueue instead of ConcurrentLinkedQueue to better handle
@@ -14,8 +21,7 @@
 	  perfLog.properties, runtimeEnv.properties and perfLogAppLogger.properties to
 	  specify only the properties that is different from the default.
 	  Sample properties file with the default values are provided in the distribution
-	  in properties folder
-	
+	  in properties folder	
 
 10/09/2012 - Version 1.2.3
 	* Refactored Struts and Portlet Filters. Current Struts filter will

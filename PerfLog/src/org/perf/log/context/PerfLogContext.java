@@ -17,11 +17,6 @@
  ******************************************************************************/
 package org.perf.log.context;
 
-/**
- * 
- * @author Pradeep Nambiar 2/10/2012
- */
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -60,6 +55,12 @@ public class PerfLogContext {
 	private int jvmDepth;
 	private int txnFilterDepth=0;
 	private long contextCreationTime;
+	// This flag is used to track if an outbound Jvm call is in progress
+	// In certain cases when making web service outbound call the container can
+	// short circuit the response handlers leaving the context in a bad state
+	// and preventing the context from cleaning up. This flag is used to reconcile
+	// the state of the context
+	private boolean awaitingReturnFromOutboundJvmCall = false;
 	private String jvmStatsAtContextCreation;
 	private Vector<TxnFilter> txnFilters = new Vector<TxnFilter>(5,5);
 	
@@ -105,6 +106,10 @@ public class PerfLogContext {
 	// selectively having a higher response time threshold for certain types of transactions
 	// this list is populated when creating a filter
 	private List<String> txnList = new ArrayList<String>();
+	// maximum txnList Entries to store to prevent uncontroleld growth of this list
+	// in case of any run away thread that calls multiple transactions filters in a loop
+	// this value can be overriden programataically if desired
+	private int maxTxnListEntries = 50;
 	
 	
 	public String getGuid() {
@@ -712,6 +717,11 @@ public class PerfLogContext {
 	}
 	
 	protected void addToTxnList(String txnName) {
+		if(txnList.size()>getMaxTxnListEntries()) {
+			txnList.remove(0);
+			txnList.remove(0);
+			txnList.add(0,"..."); // indicates the list was truncated
+		}
 		txnList.add(txnName);
 	}
 
@@ -750,6 +760,19 @@ public class PerfLogContext {
 			return txnFilters.get(filterDepth-1);
 		else 
 			return null;
+	}
+	public int getMaxTxnListEntries() {
+		return maxTxnListEntries;
+	}
+	public void setMaxTxnListEntries(int maxTxnListEntries) {
+		this.maxTxnListEntries = maxTxnListEntries;
+	}
+	public boolean isAwaitingReturnFromOutboundJvmCall() {
+		return awaitingReturnFromOutboundJvmCall;
+	}
+	public void setAwaitingReturnFromOutboundJvmCall(
+			boolean awaitingReturnFromOutboundJvmCall) {
+		this.awaitingReturnFromOutboundJvmCall = awaitingReturnFromOutboundJvmCall;
 	}
 	
 	

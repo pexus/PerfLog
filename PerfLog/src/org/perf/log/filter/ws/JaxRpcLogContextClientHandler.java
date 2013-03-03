@@ -42,6 +42,9 @@ public class JaxRpcLogContextClientHandler extends JaxRpcLogContextHandler
 	public boolean handleRequest(MessageContext context) 
 	{
 
+		Throwable throwable = null;
+		boolean handleReqRetValue = true;
+		boolean txnMonitorStarted = false;
 		try {
 
 			logger.debug("handleRequest: createPerfLogContext");
@@ -55,6 +58,7 @@ public class JaxRpcLogContextClientHandler extends JaxRpcLogContextHandler
 			// the filter count.
 			
 			PerfLogContextHelper.startPerfLogTxnMonitor();
+			txnMonitorStarted = true;
 			addMessagePropertiesToPerfLogContext(context);
 			PerfLogContextHelper.addToTxnList((String)context.getProperty(ContextHandlerConstants.PROPERTY_NAME_JAXRPC_ENDPOINT));
 			PerfLogContextHelper.addToTxnList((String)context.getProperty(ContextHandlerConstants.PROPERTY_NAME_JAXRPC_SOAP_ACTION));
@@ -87,14 +91,46 @@ public class JaxRpcLogContextClientHandler extends JaxRpcLogContextHandler
 			// track elapsed time for this web service...
 			context.setProperty(
 					ContextHandlerConstants.PROPERTY_NAME_startTime, new Long(System.currentTimeMillis()));
-			return super.handleRequest(context);
+			PerfLogContextHelper.compensateForOutboundJvmCallExceptionIfAny();
+			PerfLogContextHelper.setAwatingReturnFromOutboundJvmCall(true);
+			handleReqRetValue =  super.handleRequest(context);
+			
+			return handleReqRetValue;
 		}
 
 		catch (JAXRPCException e) {
 			logger.error(e.getMessage(), e);
 			throw e;
 
-		} finally {
+		} catch (Throwable t) {
+			throwable = t;
+			logger.error(t.getMessage());			
+			throw new JAXRPCException(t.getMessage());
+		}
+		finally {
+			if(throwable != null  || handleReqRetValue == false) {
+				// if ret_val == false, the request is never made and hence we need to delete the context.
+				PerfLogContext guidContext = PerfLogContextHelper.getCurrentThreadPerfLogContextObject();
+				long elapsedTime = getElapsedTime(context);
+				String exceptionMessage = null;
+				if(throwable != null) {
+						exceptionMessage = throwable.getMessage();
+				}
+				else {
+					// handleRequest returned false.. handle response will not be called
+					 throwable = new Throwable("handleRequest returned false");
+					 exceptionMessage = throwable.getMessage();
+					
+				}
+				if(LoggerProperties.getInstance().isPerfLogWSEnabled() &&
+						(elapsedTime >= LoggerProperties.getInstance().getPerfLogWSThreshold()))
+					logPerfMetrics(context, elapsedTime, guidContext, throwable, exceptionMessage);	
+				if(txnMonitorStarted) {
+					logger.debug("handleRequest: endPerfLogTxnMonitor");
+					PerfLogContextHelper.setAwatingReturnFromOutboundJvmCall(false);
+					PerfLogContextHelper.endPerfLogTxnMonitor();
+				}
+			}
 		}
 	}
 
@@ -114,7 +150,8 @@ public class JaxRpcLogContextClientHandler extends JaxRpcLogContextHandler
 			if(LoggerProperties.getInstance().isPerfLogWSEnabled() &&
 					(elapsedTime >= LoggerProperties.getInstance().getPerfLogWSThreshold()))			
 				logPerfMetrics(msgContext, elapsedTime, perfLogContext, null, null);
-				PerfLogContextHelper.endPerfLogTxnMonitor();
+			PerfLogContextHelper.setAwatingReturnFromOutboundJvmCall(false);
+			PerfLogContextHelper.endPerfLogTxnMonitor();
 		}
 		
 	
@@ -164,7 +201,8 @@ public class JaxRpcLogContextClientHandler extends JaxRpcLogContextHandler
 					(elapsedTime >= LoggerProperties.getInstance().getPerfLogWSThreshold()))
 			logPerfMetrics(msgContext, elapsedTime, perfLogContext,
 					new Exception("JaxRpcLogContextClientHandler:handleFault"), faultMessage);
-			logger.debug("handleResponse: deletePerfLogContext");
+			logger.debug("handleResponse: endPerfLogTxnMonitor");
+			PerfLogContextHelper.setAwatingReturnFromOutboundJvmCall(false);
 			PerfLogContextHelper.endPerfLogTxnMonitor();
 		}
 	}

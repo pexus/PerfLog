@@ -90,7 +90,8 @@ public class JaxWSLogContextClientHandler extends JaxWSLogContextHandler {
 				// track elapsed time for this web service...
 				soapMsgContext.put(
 						ContextHandlerConstants.PROPERTY_NAME_startTime, new Long(System.currentTimeMillis()));
-	
+				PerfLogContextHelper.compensateForOutboundJvmCallExceptionIfAny();
+				PerfLogContextHelper.setAwatingReturnFromOutboundJvmCall(true);
 				return true;
 			}
 			finally {
@@ -118,7 +119,8 @@ public class JaxWSLogContextClientHandler extends JaxWSLogContextHandler {
 						(elapsedTime >= LoggerProperties.getInstance().getPerfLogWSThreshold()))
 					logPerfMetrics(soapMsgContext, elapsedTime,perfLogContext, null,null);
 				
-				logger.debug("handleMessage: deletePerfLogContext");
+				logger.debug("handleMessage: endPerfLogTxnMonitor");
+				PerfLogContextHelper.setAwatingReturnFromOutboundJvmCall(false);
 				PerfLogContextHelper.endPerfLogTxnMonitor();
 			}
 			
@@ -267,7 +269,8 @@ public class JaxWSLogContextClientHandler extends JaxWSLogContextHandler {
 					(elapsedTime >= LoggerProperties.getInstance().getPerfLogWSThreshold()))
 				logPerfMetrics(soapMsgContext, elapsedTime, perfLogContext,  
 						new Exception("JaxWSLogContextClientHandler:handleFault"),faultMessage);
-			logger.debug("handleFault: jax-ws client -  deletePerfLogContext");
+			logger.debug("handleFault: jax-ws client - endPerfLogTxnMonitor");
+			PerfLogContextHelper.setAwatingReturnFromOutboundJvmCall(false);
 			PerfLogContextHelper.endPerfLogTxnMonitor();
 		}
 		return true;

@@ -136,6 +136,7 @@ public class JaxRpcLogContextServerHandler extends JaxRpcLogContextHandler {
 		} finally {
 			PerfLogContext perfLogContext = PerfLogContextHelper.getCurrentThreadPerfLogContextObject();
 			long elapsedTime = getElapsedTime(msgContext);
+			PerfLogContextHelper.compensateForOutboundJvmCallExceptionIfAny();
 			if(LoggerProperties.getInstance().isPerfLogWSEnabled() &&
 					(elapsedTime >= LoggerProperties.getInstance().getPerfLogWSThreshold()))	
 				logPerfMetrics(msgContext, elapsedTime, perfLogContext, null, null);
@@ -193,6 +194,7 @@ public class JaxRpcLogContextServerHandler extends JaxRpcLogContextHandler {
 		} finally {
 			PerfLogContext perfLogContext = PerfLogContextHelper.getCurrentThreadPerfLogContextObject();
 			long elapsedTime = getElapsedTime(msgContext);
+			PerfLogContextHelper.compensateForOutboundJvmCallExceptionIfAny();
 			if(LoggerProperties.getInstance().isPerfLogWSEnabled() &&
 					(elapsedTime >= LoggerProperties.getInstance().getPerfLogWSThreshold()))	
 				logPerfMetrics(msgContext, elapsedTime, perfLogContext,

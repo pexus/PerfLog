@@ -1,1 +1,1 @@
-Date: 2013-02-26 Version: 1.2.5 Build: 66 Edition:Community Edition
+Date: 2013-03-02 Version: 1.2.6 Build: 68 Edition:Community Edition

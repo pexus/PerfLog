@@ -159,6 +159,7 @@ public class PortletPerfLogContextFilterDefaultImpl implements
 		long elapsedTime = perfLogContext.getElapsedTimeFromTxnFilterCreation();
 		// log the performance metric using a PerfLogger
 		logger.debug("beforePerfLogContextDeletion");
+		PerfLogContextHelper.compensateForOutboundJvmCallExceptionIfAny();
 		if(LoggerProperties.getInstance().isPerfLogPortletEnabled() &&
 				(elapsedTime >= LoggerProperties.getInstance().getPerfLogPortletThreshold()))
 			logPerfMetrics(request, response, phase, elapsedTime, perfLogContext, t);

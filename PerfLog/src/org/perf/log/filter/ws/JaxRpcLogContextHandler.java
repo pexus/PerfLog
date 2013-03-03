@@ -51,15 +51,29 @@ public class JaxRpcLogContextHandler extends GenericHandler {
 	
 	@SuppressWarnings("unchecked")
 	/*
-	 * This is a utility method to register a handler programmatically
+	 * This is a utility method to register a handler programatically for a web service port name
 	 */
-	public static void registerHandler(HandlerRegistry handlerRegistry, QName serviceName, @SuppressWarnings("rawtypes") Class handlerClass) {
-		List<HandlerInfo> handlerChain = handlerRegistry.getHandlerChain(serviceName);
+	public static void registerHandler(HandlerRegistry handlerRegistry, QName portName, @SuppressWarnings("rawtypes") Class handlerClass) {
+		List<HandlerInfo> handlerChain = handlerRegistry.getHandlerChain(portName);
 		HandlerInfo handlerInfo = new HandlerInfo();
 		handlerInfo.setHandlerClass(handlerClass);
 		handlerChain.add(handlerInfo);
 	}
-	
+	/*
+	 * This is a utility method to register a handler programatically for a set of ports returned from service locator
+	 * 
+	 */
+	public static void registerHandler(HandlerRegistry handlerRegistry, Iterator<QName>ports, @SuppressWarnings("rawtypes") Class handlerClass) {
+		if(ports == null) {
+			logger.error("ports == null");
+			return;					
+		}
+		while(ports.hasNext())  {
+			QName port = ports.next();
+			logger.debug("port name = " + port );
+			registerHandler(handlerRegistry, port, handlerClass);
+		}
+	}
 
 	protected void addMessagePropertiesToPerfLogContext(MessageContext context) {
 		@SuppressWarnings("unchecked")

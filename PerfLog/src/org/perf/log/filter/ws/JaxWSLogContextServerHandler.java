@@ -87,7 +87,8 @@ public class JaxWSLogContextServerHandler extends JaxWSLogContextHandler {
 				if(LoggerProperties.getInstance().isPerfLogWSEnabled() &&
 						(elapsedTime >= LoggerProperties.getInstance().getPerfLogWSThreshold()))
 						logPerfMetrics(soapMsgContext, elapsedTime, perfLogContext,null,null);
-				logger.debug("handleMessage(): deletePerfLogContext");
+				logger.debug("handleMessage(): endPerfLogTxnMonitor");
+				PerfLogContextHelper.compensateForOutboundJvmCallExceptionIfAny();
 				PerfLogContextHelper.endPerfLogTxnMonitor();
 			}
 
@@ -278,6 +279,7 @@ public class JaxWSLogContextServerHandler extends JaxWSLogContextHandler {
 				logPerfMetrics(msgContext, elapsedTime, perfLogContext, 
 					new Exception("JaxWSLogContextServerHandler:handleFault"),
 						faultMessage);
+			PerfLogContextHelper.compensateForOutboundJvmCallExceptionIfAny();
 			PerfLogContextHelper.endPerfLogTxnMonitor();
 		}
 		return true;

@@ -102,6 +102,7 @@ public class ServletPerfLogContextFilterDefaultImpl implements ServletPerfLogCon
 			ServletResponse response, PerfLogContext perfLogContext, Throwable t) {
 		if(perfLogContext == null) return;
 		long elapsedTime = perfLogContext.getElapsedTimeFromTxnFilterCreation();
+		PerfLogContextHelper.compensateForOutboundJvmCallExceptionIfAny();
 		if(LoggerProperties.getInstance().isPerfLogServletEnabled() &&
 				(elapsedTime >= LoggerProperties.getInstance().getPerfLogServletThreshold()))
 			logPerfMetrics(request, response, elapsedTime, perfLogContext, t);

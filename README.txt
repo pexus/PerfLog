@@ -34,10 +34,11 @@ to identify slow performing transactions and perform search analytics  easily fr
 performance logs created by PerfLog.
 
 PerfLog and PerfLogAppLogger packages are available as a free open source
-community edition with Apache 2.0 License and is a supported edition for IBM WebSphere
-J2EE application server. The community edition comes with PerfLog and PerfLogAppLogger
-binary jars, source and documentation. See the Pexus PerfLog Editions section of this 
-documentation for more details.
+community edition with Apache 2.0 License. The community edition comes with PerfLog and 
+PerfLogAppLogger binary jars, source and documentation. 
+
+Customization, consulting and support services are available from Pexus LLC.
+Contact Pexus for more details.
 
 How does Pexus PerfLog work?
 ---------------------------
@@ -193,8 +194,8 @@ overriding the default properties.
 Pexus PerfLog Editions
 ----------------------
 
-Pexus PerfLog is available as a free open source edition and a premium supported
-edition for IBM WebSphere Environment.
+Pexus PerfLog is available as a free open source community edition and customized edition with
+customization services.
 
 Pexus PerfLog - Community Edition (CE)
 --------------------------------------
@@ -221,12 +222,11 @@ from the following two locations:
 		http://download.pexus.net/perflog/CE/PerfLog_CE.tar.gz
 
 
-Pexus PerfLog Customization Services and Support for IBM WebSphere environment
-------------------------------------------------------------------------------
+Pexus PerfLog Customization Services 
+-------------------------------------
 
-Pexus offers support for IBM WebSphere environment, integration and customization consulting 
-services in integrating PerfLog  for IBM WebSphere and other standard J2EE environment
-and customer applications.
+Pexus offers customization consulting services in integrating PerfLog  with customer applications.
+Contact Pexus for more details.
 
 Building Pexus PerfLog Community Edition
 ----------------------------------------

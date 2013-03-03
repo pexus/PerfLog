@@ -163,6 +163,7 @@ public class Struts1PerfLogContextFilterDefaultImpl implements
 		
 		if(perfLogContext == null) return;
 		long elapsedTime = perfLogContext.getElapsedTimeFromTxnFilterCreation();
+		PerfLogContextHelper.compensateForOutboundJvmCallExceptionIfAny();
 		if(LoggerProperties.getInstance().isPerfLogStrutsEnabled())
 			logPerfMetrics(request, response, action, actionForm, actionMapping, elapsedTime, perfLogContext, t);
 
